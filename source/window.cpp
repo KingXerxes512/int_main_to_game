@@ -1,11 +1,18 @@
 #include <print>
-#include <stdexcept>
 
 #include "error.h"
 #include "window.h"
 
+// clang-format off
+#include <gl/gl.h>
+#include "opengl/wglext.h"
+// clang-format on
+
 namespace
 {
+
+PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB{};
+PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB{};
 
 bool g_Running = true;
 
@@ -20,31 +27,150 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcA(hWnd, Msg, wParam, lParam);
 }
 
+template <class T>
+void resolve_wgl_function(T& function, const std::string& name)
+{
+    const auto address = ::wglGetProcAddress(name.c_str());
+    game::ensure(address != nullptr, "Failed to resolve {}", name);
+
+    function = reinterpret_cast<T>(address);
+}
+
+void resolve_wgl_functions(HINSTANCE instance)
+{
+    ::WNDCLASS wc = {
+        .style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC,
+        .lpfnWndProc = ::DefWindowProc,
+        .hInstance = instance,
+        .lpszClassName = "dummy window",
+    };
+    game::ensure(::RegisterClassA(&wc) != 0, "Failed to register dummy window!");
+
+    auto dummy_window = game::AutoRelease<::HWND>(
+        ::CreateWindowExA(
+            0,
+            wc.lpszClassName,
+            wc.lpszClassName,
+            0,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            0,
+            0,
+            wc.hInstance,
+            0),
+        ::DestroyWindow);
+    game::ensure(dummy_window, "Failed to create dummy window!");
+
+    auto dc =
+        game::AutoRelease<::HDC>(::GetDC(dummy_window), [&dummy_window](auto dc) { ::ReleaseDC(dummy_window, dc); });
+    game::ensure(dc, "Failed to get dummy DC!");
+
+    auto pfd = ::PIXELFORMATDESCRIPTOR{
+        .nSize = sizeof(::PIXELFORMATDESCRIPTOR),
+        .nVersion = 1,
+        .dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+        .iPixelType = PFD_TYPE_RGBA,
+        .cColorBits = 32,
+        .cAlphaBits = 8,
+        .cStencilBits = 8,
+        .iLayerType = 24,
+    };
+
+    auto pixel_format = ::ChoosePixelFormat(dc, &pfd);
+    game::ensure(pixel_format != 0, "Failed to choose a pixel format!");
+    game::ensure(::SetPixelFormat(dc, pixel_format, &pfd) != false, "Failed to set pixel format!");
+
+    const auto context = game::AutoRelease<::HGLRC>(::wglCreateContext(dc), ::wglDeleteContext);
+    game::ensure(context, "Failed to create wgl context!");
+
+    game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
+
+    resolve_wgl_function(wglCreateContextAttribsARB, "wglCreateContextAttribsARB");
+    resolve_wgl_function(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
+
+    game::ensure(::wglMakeCurrent(dc, 0) == TRUE, "Failed to unbind context!");
+}
+
+}
+
+void init_opengl(HDC dc)
+{
+    int pixelFormatAttribs[] = {
+        WGL_DRAW_TO_WINDOW_ARB,
+        GL_TRUE,
+        WGL_SUPPORT_OPENGL_ARB,
+        GL_TRUE,
+        WGL_DOUBLE_BUFFER_ARB,
+        GL_TRUE,
+        WGL_ACCELERATION_ARB,
+        WGL_FULL_ACCELERATION_ARB,
+        WGL_PIXEL_TYPE_ARB,
+        WGL_TYPE_RGBA_ARB,
+        WGL_COLOR_BITS_ARB,
+        32,
+        WGL_DEPTH_BITS_ARB,
+        24,
+        WGL_STENCIL_BITS_ARB,
+        8,
+        0,
+    };
+
+    int pixelFormat = 0;
+    UINT numFormats{};
+    ::wglChoosePixelFormatARB(dc, pixelFormatAttribs, 0, 1, &pixelFormat, &numFormats);
+    game::ensure(numFormats != 0u, "Failed to choose a pixel format");
+
+    ::PIXELFORMATDESCRIPTOR pfd = {};
+    game::ensure(::DescribePixelFormat(dc, pixelFormat, sizeof(pfd), &pfd) != 0, "Failed to describe pixel format!");
+    game::ensure(::SetPixelFormat(dc, pixelFormat, &pfd) == TRUE, "Failed to set pixel format!");
+
+    int glAttribs[] = {
+        WGL_CONTEXT_MAJOR_VERSION_ARB,
+        4,
+        WGL_CONTEXT_MINOR_VERSION_ARB,
+        6,
+        WGL_CONTEXT_PROFILE_MASK_ARB,
+        WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        0,
+    };
+
+    auto context = ::wglCreateContextAttribsARB(dc, 0, glAttribs);
+    game::ensure(context != nullptr, "Failed to create opengl context!");
+    game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
 }
 
 namespace game
 {
 
 Window::Window(std::uint32_t width, std::uint32_t height)
-    : window_({})
-    , wc_({})
+    : m_Window({})
+    , m_DC({})
+    , m_WC({})
 {
-    wc_ = {
+    m_WC = {
         .style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC,
         .lpfnWndProc = WindowProc,
         .hInstance = ::GetModuleHandleA(nullptr),
-        .lpszClassName = "window class"};
+        .lpszClassName = "window class",
+    };
 
-    ensure(::RegisterClassA(&wc_) != 0, "Failed to register class!");
+    ensure(::RegisterClassA(&m_WC) != 0, "Failed to register class!");
 
-    RECT rect{.left = {}, .top = {}, .right = static_cast<long>(width), .bottom = static_cast<long>(height)};
+    RECT rect{
+        .left = {},
+        .top = {},
+        .right = static_cast<long>(width),
+        .bottom = static_cast<long>(height),
+    };
 
-    ensure(::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false) != 0, "Could not resize window!");
+    ensure(::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false) != 0, "Failed to resize window!");
 
-    window_ = {
+    m_Window = {
         ::CreateWindowExA(
             0,
-            wc_.lpszClassName,
+            m_WC.lpszClassName,
             "game window",
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT,
@@ -53,12 +179,17 @@ Window::Window(std::uint32_t width, std::uint32_t height)
             rect.bottom - rect.top,
             nullptr,
             nullptr,
-            wc_.hInstance,
+            m_WC.hInstance,
             nullptr),
         ::DestroyWindow};
 
-    ::ShowWindow(window_, SW_SHOW);
-    ::UpdateWindow(window_);
+    m_DC = game::AutoRelease<HDC>(::GetDC(m_Window), [this](auto dc) { ::ReleaseDC(m_Window, dc); });
+
+    ::ShowWindow(m_Window, SW_SHOW);
+    ::UpdateWindow(m_Window);
+
+    resolve_wgl_functions(m_WC.hInstance);
+    init_opengl(m_DC);
 }
 
 bool Window::Running() const
@@ -70,6 +201,19 @@ bool Window::Running() const
         ::TranslateMessage(&message);
         ::DispatchMessageA(&message);
     }
+
+    static auto b = 1.0f;
+    static auto inc = -0.001f;
+
+    b += inc;
+    if (b <= 0.0f || b >= 1.0f)
+    {
+        inc *= -1.0f;
+    }
+
+    ::glClearColor(0.0f, 0.5f, b, 1.0f);
+    ::glClear(GL_COLOR_BUFFER_BIT);
+    ::SwapBuffers(m_DC);
 
     return g_Running;
 }

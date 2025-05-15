@@ -16,29 +16,29 @@ class AutoRelease
     }
 
     AutoRelease(T obj, std::function<void(T)> deleter)
-        : obj_(obj)
-        , deleter_(deleter)
+        : m_Obj(obj)
+        , m_Deleter(deleter)
     {
     }
 
     ~AutoRelease()
     {
-        if (obj_ != Invalid)
+        if (m_Obj != Invalid)
         {
-            deleter_(obj_);
+            m_Deleter(m_Obj);
         }
     }
 
     AutoRelease(const AutoRelease&) = delete;
     AutoRelease& operator=(const AutoRelease&) = delete;
 
-    AutoRelease(AutoRelease&& other)
+    AutoRelease(AutoRelease&& other) noexcept
         : AutoRelease()
     {
         swap(other);
     }
 
-    AutoRelease& operator=(AutoRelease&& other)
+    AutoRelease& operator=(AutoRelease&& other) noexcept
     {
         AutoRelease new_obj(std::move(other));
         swap(new_obj);
@@ -48,27 +48,27 @@ class AutoRelease
 
     void swap(AutoRelease& other) noexcept
     {
-        std::ranges::swap(obj_, other.obj_);
-        std::ranges::swap(deleter_, other.deleter_);
+        std::ranges::swap(m_Obj, other.m_Obj);
+        std::ranges::swap(m_Deleter, other.m_Deleter);
     }
 
     T get() const
     {
-        return obj_;
+        return m_Obj;
     }
     operator T() const
     {
-        return obj_;
+        return m_Obj;
     }
 
     explicit operator bool() const
     {
-        return obj_ != Invalid;
+        return m_Obj != Invalid;
     }
 
   private:
-    T obj_;
-    std::function<void(T)> deleter_;
+    T m_Obj;
+    std::function<void(T)> m_Deleter;
 };
 
 }

@@ -3,13 +3,10 @@
 #include <stacktrace>
 
 #include "exception.h"
-
 #include "window.h"
 
 int main()
 {
-    std::println("Hello World!");
-
     try
     {
         game::Window window(800u, 600u);

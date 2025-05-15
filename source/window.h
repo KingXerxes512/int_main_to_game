@@ -23,8 +23,9 @@ class Window
     bool Running() const;
 
   private:
-    AutoRelease<HWND, nullptr> window_;
-    WNDCLASSA wc_;
+    AutoRelease<::HWND, nullptr> m_Window;
+    AutoRelease<::HDC> m_DC;
+    WNDCLASSA m_WC;
 };
 
 }

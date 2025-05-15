@@ -15,7 +15,7 @@ class Exception : public std::runtime_error
     std::string Stacktrace() const;
 
   private:
-    std::stacktrace trace_;
+    std::stacktrace m_Trace;
 };
 
 }
