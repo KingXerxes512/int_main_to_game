@@ -6,11 +6,25 @@
 #include "opengl/glext.h"
 #include "opengl/wglext.h"
 
-extern ::PFNGLCREATESHADERPROC glCreateShader;
-
 #define FOR_OPENGL_FUNCTIONS(DO)                                                                                       \
     DO(::PFNGLCREATESHADERPROC, glCreateShader)                                                                        \
-    DO(::PFNGLCREATEVERTEXARRAYSPROC, glCreateVertexArrays)
+    DO(::PFNGLDELETESHADERPROC, glDeleteShader)                                                                        \
+    DO(::PFNGLSHADERSOURCEPROC, glShaderSource)                                                                        \
+    DO(::PFNGLCOMPILESHADERPROC, glCompileShader)                                                                      \
+    DO(::PFNGLGETSHADERIVPROC, glGetShaderiv)                                                                          \
+    DO(::PFNGLCREATEPROGRAMPROC, glCreateProgram)                                                                      \
+    DO(::PFNGLDELETEPROGRAMPROC, glDeleteProgram)                                                                      \
+    DO(::PFNGLATTACHSHADERPROC, glAttachShader)                                                                        \
+    DO(::PFNGLLINKPROGRAMPROC, glLinkProgram)                                                                          \
+    DO(::PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays)                                                                  \
+    DO(::PFNGLGENBUFFERSPROC, glGenBuffers)                                                                            \
+    DO(::PFNGLBINDVERTEXARRAYPROC, glBindVertexArray)                                                                  \
+    DO(::PFNGLBINDBUFFERPROC, glBindBuffer)                                                                            \
+    DO(::PFNGLBUFFERDATAPROC, glBufferData)                                                                            \
+    DO(::PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer)                                                          \
+    DO(::PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray)                                                  \
+    DO(::PFNGLUSEPROGRAMPROC, glUseProgram)                                                                            \
+    DO(::PFNGLDRAWARRAYSEXTPROC, glDrawArraysEXT)
 
 #ifndef NO_EXTERN
 #define DO_EXTERN(TYPE, NAME) extern TYPE NAME;
