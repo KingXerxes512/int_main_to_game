@@ -103,15 +103,10 @@ int main()
 
         ::glBindVertexArray(0);
 
-        //   create VAO
-        //   create VBO
-        // setup all that stuff
-
         while (window.Running())
         {
             ::glClear(GL_COLOR_BUFFER_BIT);
 
-            // draw
             ::glUseProgram(program);
             ::glBindVertexArray(vao);
             ::glDrawArrays(GL_TRIANGLES, 0, 3);
