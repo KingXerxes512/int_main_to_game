@@ -21,6 +21,7 @@ class Window
     // Window operator=(Window&&) = default;
 
     bool Running() const;
+    void Swap() const;
 
   private:
     AutoRelease<::HWND, nullptr> m_Window;

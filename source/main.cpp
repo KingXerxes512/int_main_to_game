@@ -4,6 +4,7 @@
 
 #include "exception.h"
 #include "window.h"
+#include "opengl.h"
 
 int main()
 {
@@ -13,6 +14,19 @@ int main()
 
         while (window.Running())
         {
+            static auto b = 1.0f;
+            static auto inc = -0.001f;
+
+            b += inc;
+            if (b <= 0.0f || b >= 1.0f)
+            {
+                inc *= -1.0f;
+            }
+
+            ::glClearColor(0.0f, 0.5f, b, 1.0f);
+            ::glClear(GL_COLOR_BUFFER_BIT);
+
+            window.Swap();
         }
     }
     catch (const game::Exception& err)

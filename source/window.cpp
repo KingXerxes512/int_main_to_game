@@ -1,12 +1,10 @@
+#include "window.h"
+#include "error.h"
+
 #include <print>
 
-#include "error.h"
-#include "window.h"
-
-// clang-format off
-#include <gl/gl.h>
-#include "opengl/wglext.h"
-// clang-format on
+#define NO_EXTERN
+#include "opengl.h"
 
 namespace
 {
@@ -28,7 +26,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 }
 
 template <class T>
-void resolve_wgl_function(T& function, const std::string& name)
+void resolve_gl_function(T& function, const std::string& name)
 {
     const auto address = ::wglGetProcAddress(name.c_str());
     game::ensure(address != nullptr, "Failed to resolve {}", name);
@@ -87,8 +85,8 @@ void resolve_wgl_functions(HINSTANCE instance)
 
     game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
 
-    resolve_wgl_function(wglCreateContextAttribsARB, "wglCreateContextAttribsARB");
-    resolve_wgl_function(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
+    resolve_gl_function(wglCreateContextAttribsARB, "wglCreateContextAttribsARB");
+    resolve_gl_function(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
 
     game::ensure(::wglMakeCurrent(dc, 0) == TRUE, "Failed to unbind context!");
 }
@@ -141,6 +139,12 @@ void init_opengl(HDC dc)
     game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
 }
 
+void resolve_global_gl_functions()
+{
+#define RESOLVE(TYPE, NAME) resolve_gl_function(NAME, #NAME);
+    FOR_OPENGL_FUNCTIONS(RESOLVE)
+}
+
 namespace game
 {
 
@@ -190,6 +194,7 @@ Window::Window(std::uint32_t width, std::uint32_t height)
 
     resolve_wgl_functions(m_WC.hInstance);
     init_opengl(m_DC);
+    resolve_global_gl_functions();
 }
 
 bool Window::Running() const
@@ -202,20 +207,12 @@ bool Window::Running() const
         ::DispatchMessageA(&message);
     }
 
-    static auto b = 1.0f;
-    static auto inc = -0.001f;
-
-    b += inc;
-    if (b <= 0.0f || b >= 1.0f)
-    {
-        inc *= -1.0f;
-    }
-
-    ::glClearColor(0.0f, 0.5f, b, 1.0f);
-    ::glClear(GL_COLOR_BUFFER_BIT);
-    ::SwapBuffers(m_DC);
-
     return g_Running;
+}
+
+void Window::Swap() const
+{
+    ::SwapBuffers(m_DC);
 }
 
 }
