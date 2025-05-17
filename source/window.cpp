@@ -1,8 +1,8 @@
 #include <print>
 
-#include "window.h"
 #include "error.h"
 #include "opengl.h"
+#include "window.h"
 
 namespace
 {
