@@ -10,6 +10,18 @@ namespace
 PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB{};
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB{};
 
+void APIENTRY opengl_debug_callback(
+    ::GLenum source,
+    ::GLenum type,
+    ::GLenum id,
+    ::GLenum severity,
+    ::GLsizei length,
+    const ::GLchar* message,
+    const void*)
+{
+    std::println("{} {} {} {} {} {}", source, type, id, severity, length, message);
+}
+
 bool g_Running = true;
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -87,6 +99,12 @@ void resolve_wgl_functions(HINSTANCE instance)
     resolve_gl_function(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
 
     game::ensure(::wglMakeCurrent(dc, 0) == TRUE, "Failed to unbind context!");
+}
+
+void setup_opengl_debug()
+{
+    ::glEnable(GL_DEBUG_OUTPUT);
+    ::glDebugMessageCallback(opengl_debug_callback, nullptr);
 }
 
 }
@@ -193,6 +211,7 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     resolve_wgl_functions(m_WC.hInstance);
     init_opengl(m_DC);
     resolve_global_gl_functions();
+    setup_opengl_debug();
 }
 
 bool Window::Running() const
