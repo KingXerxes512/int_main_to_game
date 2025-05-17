@@ -3,8 +3,8 @@
 #include <format>
 #include <string_view>
 
-#include "auto_release.h"
-#include "exception.h"
+#include "AutoRelease.h"
+#include "Exception.h"
 
 namespace game
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "auto_release.h"
-#include "opengl.h"
-#include "shader.h"
+#include "AutoRelease.h"
+#include "Opengl.h"
+#include "Shader.h"
 
 namespace game
 {

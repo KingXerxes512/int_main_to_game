@@ -2,13 +2,13 @@
 #include <print>
 #include <stacktrace>
 
-#include "error.h"
-#include "exception.h"
-#include "opengl.h"
-#include "window.h"
-#include "shader.h"
-#include "material.h"
-#include "mesh.h"
+#include "Error.h"
+#include "Exception.h"
+#include "Opengl.h"
+#include "Window.h"
+#include "Shader.h"
+#include "Material.h"
+#include "Mesh.h"
 
 namespace
 {

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "auto_release.h"
+#include "AutoRelease.h"
 #include <Windows.h>
 
 namespace game
