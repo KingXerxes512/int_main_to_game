@@ -66,6 +66,11 @@ class AutoRelease
         return m_Obj != Invalid;
     }
 
+    T* operator&() noexcept
+    {
+        return std::addressof(m_Obj);
+    }
+
   private:
     T m_Obj;
     std::function<void(T)> m_Deleter;
