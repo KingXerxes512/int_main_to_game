@@ -11,6 +11,7 @@ file(GLOB Sources
 	source/main.cpp
 	source/exception.cpp
 	source/window.cpp
+	source/shader.cpp
 )
 
 file(GLOB Headers
@@ -19,6 +20,7 @@ file(GLOB Headers
 	source/exception.h
 	source/window.h
 	source/opengl.h
+	source/shader.h
 	third_party/opengl/wglext.h
 	third_party/opengl/glext.h
 )

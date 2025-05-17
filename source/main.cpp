@@ -6,6 +6,7 @@
 #include "exception.h"
 #include "opengl.h"
 #include "window.h"
+#include "shader.h"
 
 namespace
 {
@@ -39,23 +40,6 @@ void main()
 
 )";
 
-game::AutoRelease<GLuint> compile_shader(std::string_view source, ::GLenum shader_type)
-{
-    auto shader = game::AutoRelease<::GLuint>(::glCreateShader(shader_type), ::glDeleteShader);
-
-    const ::GLchar* strings = {source.data()};
-    const ::GLint lengths[] = {static_cast<::GLint>(source.length())};
-
-    ::glShaderSource(shader, 1, &strings, lengths);
-    ::glCompileShader(shader);
-
-    ::GLint result;
-    ::glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-    game::ensure(result, "Failed to compile shader {}", shader_type);
-
-    return shader;
-}
-
 }
 
 int main()
@@ -72,14 +56,14 @@ int main()
     {
         game::Window window(800u, 600u);
 
-        auto vertex_shader = compile_shader(vertex_shader_src, GL_VERTEX_SHADER);
-        auto fragment_shader = compile_shader(fragment_shader_src, GL_FRAGMENT_SHADER);
+        auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
+        auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
 
         auto program = game::AutoRelease<::GLuint>(::glCreateProgram(), ::glDeleteProgram);
         game::ensure(program, "Failed to create opengl program!");
 
-        ::glAttachShader(program, vertex_shader);
-        ::glAttachShader(program, fragment_shader);
+        ::glAttachShader(program, vertex_shader.Native_Handle());
+        ::glAttachShader(program, fragment_shader.Native_Handle());
         ::glLinkProgram(program);
 
         ::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
