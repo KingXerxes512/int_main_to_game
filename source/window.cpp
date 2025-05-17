@@ -1,9 +1,7 @@
-#include "window.h"
-#include "error.h"
-
 #include <print>
 
-#define NO_EXTERN
+#include "window.h"
+#include "error.h"
 #include "opengl.h"
 
 namespace
