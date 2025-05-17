@@ -4,11 +4,12 @@
 
 #include "Error.h"
 #include "Exception.h"
-#include "Opengl.h"
-#include "Window.h"
-#include "Shader.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "Opengl.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "Window.h"
 
 namespace
 {
@@ -50,22 +51,16 @@ int main()
     {
         game::Window window(800u, 600u);
 
-        auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
-        auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
+        const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
+        const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
-        auto mesh = game::Mesh();
+        const auto mesh = game::Mesh();
 
-        ::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        auto renderer = game::Renderer(std::move(material));
 
         while (window.Running())
         {
-            ::glClear(GL_COLOR_BUFFER_BIT);
-
-            ::glUseProgram(material.Native_Handle());
-            mesh.Bind();
-            ::glDrawArrays(GL_TRIANGLES, 0, 3);
-            mesh.Unbind();
-
+            renderer.Render();
             window.Swap();
         }
     }
