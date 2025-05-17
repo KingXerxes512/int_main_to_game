@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
+#include "Log.h"
 
 namespace
 {
@@ -47,6 +48,8 @@ void main()
 
 int main()
 {
+    game::log::info("Hello World");
+
     try
     {
         game::Window window(800u, 600u);
