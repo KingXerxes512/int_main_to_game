@@ -4,13 +4,14 @@
 
 #include "Error.h"
 #include "Exception.h"
+#include "Log.h"
 #include "Material.h"
+#include "Matrix4.h"
 #include "Mesh.h"
 #include "Opengl.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
-#include "Log.h"
 
 namespace
 {
@@ -23,9 +24,13 @@ layout (location = 1) in vec3 color;
 
 out vec3 vertex_color;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 void main()
 {
-    gl_Position = vec4(position, 1.0);
+    gl_Position = projection * view * model * vec4(position, 1.0);
     vertex_color = color;
 }
 
@@ -49,6 +54,13 @@ void main()
 int main()
 {
     game::log::info("Hello World");
+
+    game::Mat4 m1{{1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f}};
+    game::Mat4 m2{{1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f}};
+
+    m1 *= m2;
+
+    std::println("{}", m1);
 
     try
     {

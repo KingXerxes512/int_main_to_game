@@ -27,7 +27,10 @@
     DO(::PFNGLDRAWARRAYSEXTPROC, glDrawArraysEXT)                                                                      \
     DO(::PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays)                                                            \
     DO(::PFNGLDELETEBUFFERSPROC, glDeleteBuffers)                                                                      \
-    DO(::PFNGLDEBUGMESSAGECALLBACKPROC, glDebugMessageCallback)
+    DO(::PFNGLDEBUGMESSAGECALLBACKPROC, glDebugMessageCallback)                                                        \
+    DO(::PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation)                                                            \
+    DO(::PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv)                                                                \
+    DO(::PFNGLDEBUGMESSAGECONTROLPROC, glDebugMessageControl)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;
 FOR_OPENGL_FUNCTIONS(DO_DEFINE)

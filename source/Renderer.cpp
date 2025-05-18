@@ -1,4 +1,8 @@
 #include "Renderer.h"
+#include "Matrix4.h"
+#include "Vector3.h"
+
+#include <numbers>
 
 namespace game
 {
@@ -15,6 +19,20 @@ void Renderer::Render() const
     ::glClear(GL_COLOR_BUFFER_BIT);
 
     ::glUseProgram(m_Material.Native_Handle());
+
+    static constexpr auto model = Mat4(Vector3{.x = 0.0f, .y = 0.0f, .z = 0.0f});
+    const GLint model_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "model");
+    ::glUniformMatrix4fv(model_uniform, 1, GL_FALSE, model.Data().data());
+
+    static const auto view = Mat4::LookAt(
+        {.x = 0.0f, .y = 0.0f, .z = 5.0f}, {.x = 0.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
+    const GLint view_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "view");
+    ::glUniformMatrix4fv(view_uniform, 1, GL_FALSE, view.Data().data());
+
+    static const auto proj = Mat4::Perspective(std::numbers::pi_v<float> / 4.0f, 800.0f, 600.0f, 0.001f, 100.0f);
+    const GLint proj_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "projection");
+    ::glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, proj.Data().data());
+
     m_Mesh.Bind();
     ::glDrawArrays(GL_TRIANGLES, 0, 3);
     m_Mesh.Unbind();

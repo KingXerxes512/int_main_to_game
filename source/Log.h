@@ -3,9 +3,12 @@
 #include <format>
 #include <print>
 #include <source_location>
+#include <mutex>
 
 namespace game::log
 {
+
+inline std::recursive_mutex log_mutex;
 
 enum class Level
 {
@@ -25,6 +28,7 @@ struct print<L, const char*, Args...>
 {
     print(const char* msg, Args&&... args, std::source_location loc = std::source_location::current())
     {
+        std::lock_guard lk(log_mutex);
         constexpr const char* c = L == Level::DEBUG  ? "[DEBUG]"
                                   : L == Level::INFO ? "[INFO] "
                                   : L == Level::WARN ? "[WARN] "

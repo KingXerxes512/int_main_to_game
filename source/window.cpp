@@ -19,7 +19,16 @@ void APIENTRY opengl_debug_callback(
     const ::GLchar* message,
     const void*)
 {
-    std::println("{} {} {} {} {} {}", source, type, id, severity, length, message);
+    std::string sev = "?";
+    switch (severity)
+    {
+        case GL_DEBUG_SEVERITY_LOW: sev = "GL_DEBUG_SEVERITY_LOW"; break;
+        case GL_DEBUG_SEVERITY_MEDIUM: sev = "GL_DEBUG_SEVERITY_MEDIUM"; break;
+        case GL_DEBUG_SEVERITY_HIGH: sev = "GL_DEBUG_SEVERITY_HIGH"; break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: sev = "GL_DEBUG_SEVERITY_NOTIFICATION"; break;
+    }
+
+    std::println("{} {} {} {} {} {}", source, type, id, sev, length, message);
 }
 
 bool g_Running = true;
