@@ -113,6 +113,7 @@ void resolve_wgl_functions(HINSTANCE instance)
 void setup_opengl_debug()
 {
     ::glEnable(GL_DEBUG_OUTPUT);
+    ::glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     ::glDebugMessageCallback(opengl_debug_callback, nullptr);
 }
 
