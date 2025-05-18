@@ -53,6 +53,8 @@ class Mat4
 
     friend constexpr Mat4& operator*=(Mat4& m1, const Mat4& m2);
 
+    constexpr bool operator==(const Mat4&) const = default;
+
   private:
     std::array<float, 16u> m_Elements;
 };
@@ -76,7 +78,7 @@ constexpr Mat4& operator*=(Mat4& m1, const Mat4& m2)
     return m1;
 }
 
-constexpr Mat4& operator*(const Mat4& m1, const Mat4& m2)
+constexpr Mat4 operator*(const Mat4& m1, const Mat4& m2)
 {
     Mat4 tmp = m1;
     return tmp *= m2;

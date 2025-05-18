@@ -25,7 +25,7 @@ void Renderer::Render() const
     ::glUniformMatrix4fv(model_uniform, 1, GL_FALSE, model.Data().data());
 
     static const auto view = Mat4::LookAt(
-        {.x = 0.0f, .y = 0.0f, .z = 5.0f}, {.x = 0.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
+        {.x = 2.0f, .y = 0.0f, .z = 5.0f}, {.x = 2.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
     const GLint view_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "view");
     ::glUniformMatrix4fv(view_uniform, 1, GL_FALSE, view.Data().data());
 
