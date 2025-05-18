@@ -222,6 +222,8 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     init_opengl(m_DC);
     resolve_global_gl_functions();
     setup_opengl_debug();
+
+    ::glEnable(GL_CULL_FACE);
 }
 
 bool Window::Running() const

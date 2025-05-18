@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Matrix4.h"
 #include "Vector3.h"
+#include "Log.h"
 
 #include <numbers>
 
@@ -20,12 +21,21 @@ void Renderer::Render() const
 
     ::glUseProgram(m_Material.Native_Handle());
 
-    static constexpr auto model = Mat4(Vector3{.x = 0.0f, .y = 0.0f, .z = 0.0f});
+    static auto x = 2.0f;
+    static auto z = 0.0f;
+    static auto t = 0.0f;
+
+    x = std::sin(t) * 2.0f;
+    z = std::cos(t) * 2.0f;
+
+    t += 0.01f;
+
+    const auto model = Mat4(Vector3{.x = 0.0f, .y = 0.0f, .z = 0.0f});
     const GLint model_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "model");
     ::glUniformMatrix4fv(model_uniform, 1, GL_FALSE, model.Data().data());
 
-    static const auto view = Mat4::LookAt(
-        {.x = 2.0f, .y = 0.0f, .z = 5.0f}, {.x = 2.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
+    const auto view = Mat4::LookAt(
+        {.x = x, .y = 0.0f, .z = z}, {.x = 0.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
     const GLint view_uniform = ::glGetUniformLocation(m_Material.Native_Handle(), "view");
     ::glUniformMatrix4fv(view_uniform, 1, GL_FALSE, view.Data().data());
 
