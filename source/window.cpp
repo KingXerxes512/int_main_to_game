@@ -223,7 +223,9 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     resolve_global_gl_functions();
     setup_opengl_debug();
 
-    ::glEnable(GL_CULL_FACE);
+    ::glEnable(GL_DEPTH_TEST);
+
+    //::glEnable(GL_CULL_FACE);
 }
 
 bool Window::Running() const
