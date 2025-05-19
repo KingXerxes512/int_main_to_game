@@ -2,6 +2,7 @@
 #include <print>
 #include <stacktrace>
 
+#include "Camera.h"
 #include "Error.h"
 #include "Exception.h"
 #include "Log.h"
@@ -12,6 +13,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
+#include <numbers>
 
 namespace
 {
@@ -60,7 +62,7 @@ int main()
 
     m1 *= m2;
 
-    std::println("{}", m1);
+    game::log::info("matrix: \n{}", m1);
 
     try
     {
@@ -73,9 +75,30 @@ int main()
 
         auto renderer = game::Renderer(std::move(material));
 
+        static auto x = 2.0f;
+        static auto y = 2.0f;
+        static auto z = 0.0f;
+        static auto t = 0.0f;
+
+        x = std::sin(t) * 5.0f;
+        y = std::cos(t) * 5.0f;
+        z = std::cos(t) * 5.0f;
+
+        t += 0.01f;
+
+        const auto camera = game::Camera(
+            {.x = 3.0f, .y = 3.0f, .z = 5.0f},
+            {.x = 0.0f, .y = 0.0f, .z = 0.0f},
+            {.x = 0.0f, .y = 1.0f, .z = 0.0f},
+            std::numbers::pi_v<float> / 4.0f,
+            800.0f,
+            600.0f,
+            0.001f,
+            100.0f);
+
         while (window.Running())
         {
-            renderer.Render();
+            renderer.Render(camera);
             window.Swap();
         }
     }

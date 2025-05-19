@@ -26,7 +26,7 @@ struct print
 template <Level L, class... Args>
 struct print<L, const char*, Args...>
 {
-    print(const char* msg, Args&&... args, std::source_location loc = std::source_location::current())
+    print(const char* msg, const Args&... args, std::source_location loc = std::source_location::current())
     {
         std::lock_guard lk(log_mutex);
         constexpr const char* c = L == Level::DEBUG  ? "[DEBUG]"

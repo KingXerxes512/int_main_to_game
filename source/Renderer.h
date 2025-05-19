@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "AutoRelease.h"
 #include "Material.h"
 #include "Mesh.h"
@@ -12,7 +13,7 @@ class Renderer
 {
   public:
     Renderer(Material material);
-    void Render() const;
+    void Render(const Camera& camera) const;
 
   private:
     Mesh m_Mesh;
