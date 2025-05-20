@@ -2,8 +2,7 @@
 
 #include "Camera.h"
 #include "AutoRelease.h"
-#include "Material.h"
-#include "Mesh.h"
+#include "Scene.h"
 #include "Opengl.h"
 
 namespace game
@@ -12,12 +11,9 @@ namespace game
 class Renderer
 {
   public:
-    Renderer(Material material);
-    void Render(const Camera& camera) const;
+    void Render(const Camera& camera, const Scene& scene) const;
 
   private:
-    Mesh m_Mesh;
-    Material m_Material;
 };
 
 }

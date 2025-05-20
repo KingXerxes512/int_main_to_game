@@ -1,4 +1,5 @@
 #include <iostream>
+#include <numbers>
 #include <print>
 #include <stacktrace>
 
@@ -11,9 +12,9 @@
 #include "Mesh.h"
 #include "Opengl.h"
 #include "Renderer.h"
+#include "Scene.h"
 #include "Shader.h"
 #include "Window.h"
-#include <numbers>
 
 namespace
 {
@@ -55,15 +56,6 @@ void main()
 
 int main()
 {
-    game::log::info("Hello World");
-
-    game::Mat4 m1{{1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f}};
-    game::Mat4 m2{{1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f}};
-
-    m1 *= m2;
-
-    game::log::info("matrix: \n{}", m1);
-
     try
     {
         game::Window window(800u, 600u);
@@ -73,7 +65,7 @@ int main()
         auto material = game::Material(vertex_shader, fragment_shader);
         const auto mesh = game::Mesh();
 
-        auto renderer = game::Renderer(std::move(material));
+        auto renderer = game::Renderer();
 
         static auto x = 2.0f;
         static auto y = 2.0f;
@@ -96,9 +88,14 @@ int main()
             0.001f,
             100.0f);
 
+        game::Entity e(&mesh, &material);
+
+        auto scene = game::Scene{.m_Entities = {&e}};
+        // scene.m_Entities.emplace_back(&e);
+
         while (window.Running())
         {
-            renderer.Render(camera);
+            renderer.Render(camera, scene);
             window.Swap();
         }
     }
