@@ -79,7 +79,7 @@ int main()
         t += 0.01f;
 
         const auto camera = game::Camera(
-            {.x = 3.0f, .y = 3.0f, .z = 5.0f},
+            {.x = 3.0f, .y = 3.0f, .z = 10.0f},
             {.x = 0.0f, .y = 0.0f, .z = 0.0f},
             {.x = 0.0f, .y = 1.0f, .z = 0.0f},
             std::numbers::pi_v<float> / 4.0f,
@@ -88,10 +88,10 @@ int main()
             0.001f,
             100.0f);
 
-        game::Entity e(&mesh, &material);
+        game::Entity e1(&mesh, &material, game::Vector3{0.0f, 0.0f, 0.0f});
+        game::Entity e2(&mesh, &material, game::Vector3{2.5f, 2.0f, -1.5f});
 
-        auto scene = game::Scene{.m_Entities = {&e}};
-        // scene.m_Entities.emplace_back(&e);
+        auto scene = game::Scene{.m_Entities = {&e1, &e2}};
 
         while (window.Running())
         {

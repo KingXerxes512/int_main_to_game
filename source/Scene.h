@@ -7,10 +7,8 @@
 namespace game
 {
 
-class Scene
+struct Scene
 {
-  public:
-  //private:
     std::vector<const Entity*> m_Entities;
 };
 
