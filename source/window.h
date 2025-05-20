@@ -1,9 +1,12 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
+
+#include <Windows.h>
 
 #include "AutoRelease.h"
-#include <Windows.h>
+#include "Event.h"
 
 namespace game
 {
@@ -17,10 +20,10 @@ class Window
     Window(const Window&) = delete;
     Window operator=(const Window&) = delete;
 
-    // Window(const Window&&) = default;
-    // Window operator=(Window&&) = default;
+    Window(Window&&) = default;
+    Window& operator=(Window&&) = default;
 
-    bool Running() const;
+    std::optional<Event> PumpEvent() const;
     void Swap() const;
 
   private:

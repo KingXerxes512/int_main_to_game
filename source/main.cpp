@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Error.h"
 #include "Exception.h"
+#include "KeyEvent.h"
 #include "Log.h"
 #include "Material.h"
 #include "Matrix4.h"
@@ -93,8 +94,34 @@ int main()
 
         auto scene = game::Scene{.m_Entities = {&e1, &e2}};
 
-        while (window.Running())
+        auto running = true;
+
+        while (running)
         {
+            auto event = window.PumpEvent();
+            while (event && running)
+            {
+                std::visit(
+                    [&](auto&& arg)
+                    {
+                        using T = std::decay_t<decltype(arg)>;
+
+                        if constexpr (std::same_as<T, game::StopEvent>)
+                        {
+                            running = false;
+                        }
+                        else if constexpr (std::same_as<T, game::KeyEvent>)
+                        {
+                            if (arg.Key() == game::Key::ESC)
+                            {
+                                running = false;
+                            }
+                        }
+                    },
+                    *event);
+                event = window.PumpEvent();
+            }
+
             renderer.Render(camera, scene);
             window.Swap();
         }
