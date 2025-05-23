@@ -79,7 +79,7 @@ int main()
 
         t += 0.01f;
 
-        const auto camera = game::Camera(
+        auto camera = game::Camera(
             {.x = 3.0f, .y = 3.0f, .z = 10.0f},
             {.x = 0.0f, .y = 0.0f, .z = 0.0f},
             {.x = 0.0f, .y = 1.0f, .z = 0.0f},
@@ -91,8 +91,9 @@ int main()
 
         game::Entity e1(&mesh, &material, game::Vector3{0.0f, 0.0f, 0.0f});
         game::Entity e2(&mesh, &material, game::Vector3{2.5f, 2.0f, -1.5f});
-
         auto scene = game::Scene{.m_Entities = {&e1, &e2}};
+
+        auto velocity = game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.0f};
 
         auto running = true;
 
@@ -116,11 +117,37 @@ int main()
                             {
                                 running = false;
                             }
+                            else if (arg.Key() == game::Key::D)
+                            {
+                                velocity += arg.State() == game::KeyState::UP
+                                                ? game::Vector3{.x = -0.5f, .y = 0.0f, .z = 0.0f}
+                                                : game::Vector3{.x = 0.5f, .y = 0.0f, .z = 0.0f};
+                            }
+                            else if (arg.Key() == game::Key::A)
+                            {
+                                velocity += arg.State() == game::KeyState::UP
+                                                ? game::Vector3{.x = 0.5f, .y = 0.0f, .z = 0.0f}
+                                                : game::Vector3{.x = -0.5f, .y = 0.0f, .z = 0.0f};
+                            }
+                            else if (arg.Key() == game::Key::W)
+                            {
+                                velocity += arg.State() == game::KeyState::UP
+                                                ? game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.5f}
+                                                : game::Vector3{.x = 0.0f, .y = 0.0f, .z = -0.5f};
+                            }
+                            else if (arg.Key() == game::Key::S)
+                            {
+                                velocity += arg.State() == game::KeyState::UP
+                                                ? game::Vector3{.x = 0.0f, .y = 0.0f, .z = -0.5f}
+                                                : game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.5f};
+                            }
                         }
                     },
                     *event);
                 event = window.PumpEvent();
             }
+
+            camera.Translate(game::Vector3::Normalize(velocity));
 
             renderer.Render(camera, scene);
             window.Swap();

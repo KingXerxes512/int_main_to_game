@@ -21,12 +21,16 @@ class Camera
         float nearPlane,
         float farPlane);
 
+    void Translate(const Vector3& translation);
     std::span<const float> View() const;
     std::span<const float> Projection() const;
 
   private:
     Mat4 m_View;
     Mat4 m_Projection;
+    Vector3 m_Position;
+    Vector3 m_Direction;
+    Vector3 m_Up;
 };
 
 }

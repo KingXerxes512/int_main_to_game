@@ -39,6 +39,12 @@ enum class Key
     Z = 0x5A,
 };
 
+enum class KeyState
+{
+    UP,
+    DOWN
+};
+
 }
 
 template <>
@@ -88,5 +94,26 @@ struct std::formatter<game::Key>
         }
 
         return std::format_to(ctx.out(), "{}", s);
+    }
+};
+
+template <>
+struct std::formatter<game::KeyState>
+{
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return std::begin(ctx);
+    }
+
+    auto format(const game::KeyState& obj, std::format_context& ctx) const
+    {
+        using namespace std::literals;
+        using enum game::KeyState;
+        auto s = "?"sv;
+        switch (obj)
+        {
+            case UP: return std::format_to(ctx.out(), "UP");
+            case DOWN: return std::format_to(ctx.out(), "DOWN"); ;
+        }
     }
 };

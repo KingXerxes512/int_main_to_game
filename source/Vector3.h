@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <format>
 
 namespace game
 {
@@ -10,6 +11,12 @@ struct Vector3
     static Vector3 Normalize(const Vector3& v)
     {
         const auto length = std::hypot(v.x, v.y, v.z);
+
+        if (length == 0.0)
+        {
+            return {.x = 0.0f, .y = 0.0f, .z = 0.0f};
+        }
+
         return {.x = v.x / length, .y = v.y / length, .z = v.z / length};
     }
 
@@ -64,9 +71,18 @@ constexpr Vector3 operator-(const Vector3& v)
     return {-v.x, -v.y, -v.z};
 }
 
-//constexpr bool operator==(const Vector3& v1, const Vector3& v2)
-//{
-//    return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z;
-//}
-
 }
+
+template <>
+struct std::formatter<game::Vector3>
+{
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return std::begin(ctx);
+    }
+
+    auto format(const game::Vector3& obj, std::format_context& ctx) const
+    {
+        return std::format_to(ctx.out(), "x={}, y={}, z={}", obj.x, obj.y, obj.z);
+    }
+};

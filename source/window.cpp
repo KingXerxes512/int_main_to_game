@@ -45,9 +45,14 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     switch (Msg)
     {
         case WM_CLOSE: g_EventQueue.emplace(game::StopEvent()); break;
+        case WM_KEYUP:
+        {
+            g_EventQueue.emplace(game::KeyEvent(static_cast<game::Key>(wParam), game::KeyState::UP));
+            break;
+        }
         case WM_KEYDOWN:
         {
-            g_EventQueue.emplace(game::KeyEvent(static_cast<game::Key>(wParam)));
+            g_EventQueue.emplace(game::KeyEvent(static_cast<game::Key>(wParam), game::KeyState::DOWN));
             break;
         }
     }
