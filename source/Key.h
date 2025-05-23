@@ -114,6 +114,7 @@ struct std::formatter<game::KeyState>
         {
             case UP: return std::format_to(ctx.out(), "UP");
             case DOWN: return std::format_to(ctx.out(), "DOWN"); ;
+            default: return std::format_to(ctx.out(), "?");
         }
     }
 };

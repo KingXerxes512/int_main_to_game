@@ -1,7 +1,9 @@
 #include <iostream>
 #include <numbers>
 #include <print>
+#include <ranges>
 #include <stacktrace>
+#include <unordered_map>
 
 #include "Camera.h"
 #include "Error.h"
@@ -65,19 +67,22 @@ int main()
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
         const auto mesh = game::Mesh();
-
         auto renderer = game::Renderer();
 
-        static auto x = 2.0f;
-        static auto y = 2.0f;
-        static auto z = 0.0f;
-        static auto t = 0.0f;
+        auto entities = std::vector<game::Entity>{};
 
-        x = std::sin(t) * 5.0f;
-        y = std::cos(t) * 5.0f;
-        z = std::cos(t) * 5.0f;
+        for (auto i = -10; i < 10; ++i)
+        {
+            for (auto j = -10; j < 10; ++j)
+            {
+                entities.emplace_back(
+                    &mesh, &material, game::Vector3{.x = static_cast<float>(i) * 2.5f, .y = 0.0f, .z = static_cast<float>(j) * 2.5f});
+            }
+        }
 
-        t += 0.01f;
+        const auto scene = game::Scene{
+            .m_Entities =
+                entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>()};
 
         auto camera = game::Camera(
             {.x = 3.0f, .y = 3.0f, .z = 10.0f},
@@ -89,11 +94,12 @@ int main()
             0.001f,
             100.0f);
 
-        game::Entity e1(&mesh, &material, game::Vector3{0.0f, 0.0f, 0.0f});
+        /*game::Entity e1(&mesh, &material, game::Vector3{0.0f, 0.0f, 0.0f});
         game::Entity e2(&mesh, &material, game::Vector3{2.5f, 2.0f, -1.5f});
-        auto scene = game::Scene{.m_Entities = {&e1, &e2}};
+        auto scene = game::Scene{.m_Entities = {&e1, &e2}};*/
 
-        auto velocity = game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.0f};
+        std::unordered_map<game::Key, bool> key_state{
+            {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
 
         auto running = true;
 
@@ -117,36 +123,18 @@ int main()
                             {
                                 running = false;
                             }
-                            else if (arg.Key() == game::Key::D)
-                            {
-                                velocity += arg.State() == game::KeyState::UP
-                                                ? game::Vector3{.x = -0.5f, .y = 0.0f, .z = 0.0f}
-                                                : game::Vector3{.x = 0.5f, .y = 0.0f, .z = 0.0f};
-                            }
-                            else if (arg.Key() == game::Key::A)
-                            {
-                                velocity += arg.State() == game::KeyState::UP
-                                                ? game::Vector3{.x = 0.5f, .y = 0.0f, .z = 0.0f}
-                                                : game::Vector3{.x = -0.5f, .y = 0.0f, .z = 0.0f};
-                            }
-                            else if (arg.Key() == game::Key::W)
-                            {
-                                velocity += arg.State() == game::KeyState::UP
-                                                ? game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.5f}
-                                                : game::Vector3{.x = 0.0f, .y = 0.0f, .z = -0.5f};
-                            }
-                            else if (arg.Key() == game::Key::S)
-                            {
-                                velocity += arg.State() == game::KeyState::UP
-                                                ? game::Vector3{.x = 0.0f, .y = 0.0f, .z = -0.5f}
-                                                : game::Vector3{.x = 0.0f, .y = 0.0f, .z = 0.5f};
-                            }
+
+                            key_state[arg.Key()] = arg.State() == game::KeyState::DOWN;
                         }
                     },
                     *event);
                 event = window.PumpEvent();
             }
 
+            const auto velocity = game::Vector3{
+                .x = (key_state[game::Key::D] ? 1.0f : 0.0f) + (key_state[game::Key::A] ? -1.0f : 0.0f),
+                .y = 0.0f,
+                .z = (key_state[game::Key::S] ? 1.0f : 0.0f) + (key_state[game::Key::W] ? -1.0f : 0.0f)};
             camera.Translate(game::Vector3::Normalize(velocity));
 
             renderer.Render(camera, scene);
