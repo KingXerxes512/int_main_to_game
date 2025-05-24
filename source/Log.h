@@ -19,41 +19,37 @@ enum class Level
 };
 
 template <Level L, class... Args>
-struct print
+struct Print
 {
-};
-
-template <Level L, class... Args>
-struct print<L, const char*, Args...>
-{
-    print(const char* msg, const Args&... args, std::source_location loc = std::source_location::current())
+    Print(const char* msg, const Args&... args, std::source_location loc = std::source_location::current())
     {
         std::lock_guard lk(log_mutex);
-        constexpr const char* c = L == Level::DEBUG   ? "[DEBUG]"
-                                  : L == Level::INFO  ? "[INFO] "
-                                  : L == Level::WARN  ? "[WARN] "
-                                  : L == Level::ERROR ? "[ERROR]"
-                                                      : "[?]";
+        constexpr const char* logLevel = L == Level::DEBUG   ? "[DEBUG]"
+                                         : L == Level::INFO  ? "[INFO] "
+                                         : L == Level::WARN  ? "[WARN] "
+                                         : L == Level::ERROR ? "[ERROR]"
+                                                             : "[?]";
 
-        std::println("{} {}:{} {}", c, loc.file_name(), loc.line(), std::vformat(msg, std::make_format_args(args...)));
+        std::println(
+            "{} {}:{} {}", logLevel, loc.file_name(), loc.line(), std::vformat(msg, std::make_format_args(args...)));
     }
 };
 
 // This allows for us to have Args... and also defaulted args at the end
 // It basically takes all the given args to Args... and then leaves the defaulted arg to be default
 template <Level L, class... Args>
-print(Args...) -> print<L, Args...>;
+Print(const char*, Args...) -> Print<L, Args...>;
 
 template <class... Args>
-using debug = print<Level::DEBUG, Args...>;
+using debug = Print<Level::DEBUG, Args...>;
 
 template <class... Args>
-using info = print<Level::INFO, Args...>;
+using info = Print<Level::INFO, Args...>;
 
 template <class... Args>
-using warn = print<Level::WARN, Args...>;
+using warn = Print<Level::WARN, Args...>;
 
 template <class... Args>
-using error = print<Level::ERROR, Args...>;
+using error = Print<Level::ERROR, Args...>;
 
 }
