@@ -76,7 +76,9 @@ int main()
             for (auto j = -10; j < 10; ++j)
             {
                 entities.emplace_back(
-                    &mesh, &material, game::Vector3{.x = static_cast<float>(i) * 2.5f, .y = 0.0f, .z = static_cast<float>(j) * 2.5f});
+                    &mesh,
+                    &material,
+                    game::Vector3{.x = static_cast<float>(i) * 2.5f, .y = 0.0f, .z = static_cast<float>(j) * 2.5f});
             }
         }
 
@@ -103,31 +105,35 @@ int main()
 
         auto running = true;
 
+        const auto processEvents = [&](auto&& arg)
+        {
+            using T = std::decay_t<decltype(arg)>;
+
+            if constexpr (std::same_as<T, game::StopEvent>)
+            {
+                running = false;
+            }
+            else if constexpr (std::same_as<T, game::KeyEvent>)
+            {
+                if (arg.Key() == game::Key::ESC)
+                {
+                    running = false;
+                }
+
+                key_state[arg.Key()] = arg.State() == game::KeyState::DOWN;
+            }
+            else if constexpr (std::same_as<T, game::MouseEvent>)
+            {
+                game::log::debug("{}", arg);
+            }
+        };
+
         while (running)
         {
             auto event = window.PumpEvent();
             while (event && running)
             {
-                std::visit(
-                    [&](auto&& arg)
-                    {
-                        using T = std::decay_t<decltype(arg)>;
-
-                        if constexpr (std::same_as<T, game::StopEvent>)
-                        {
-                            running = false;
-                        }
-                        else if constexpr (std::same_as<T, game::KeyEvent>)
-                        {
-                            if (arg.Key() == game::Key::ESC)
-                            {
-                                running = false;
-                            }
-
-                            key_state[arg.Key()] = arg.State() == game::KeyState::DOWN;
-                        }
-                    },
-                    *event);
+                std::visit(processEvents, *event);
                 event = window.PumpEvent();
             }
 

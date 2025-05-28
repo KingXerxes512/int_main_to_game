@@ -9,6 +9,8 @@
 #include "opengl.h"
 #include "window.h"
 
+#include <hidusage.h>
+
 namespace
 {
 
@@ -17,7 +19,7 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB{};
 
 std::queue<game::Event> g_EventQueue;
 
-void APIENTRY opengl_debug_callback(
+void APIENTRY OpenGLDebugCallback(
     ::GLenum source,
     ::GLenum type,
     ::GLenum id,
@@ -55,13 +57,33 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
             g_EventQueue.emplace(game::KeyEvent(static_cast<game::Key>(wParam), game::KeyState::DOWN));
             break;
         }
+        case WM_INPUT:
+        {
+            auto raw = ::RAWINPUT{};
+            auto dwSize = UINT{sizeof(::RAWINPUT)};
+            game::ensure(
+                ::GetRawInputData(
+                    reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, &raw, &dwSize, sizeof(::RAWINPUTHEADER)) !=
+                    static_cast<::UINT>(-1),
+                "Failed to get raw input.");
+
+            if (raw.header.dwType == RIM_TYPEMOUSE)
+            {
+                const auto x = raw.data.mouse.lLastX;
+                const auto y = raw.data.mouse.lLastY;
+
+                g_EventQueue.emplace(game::MouseEvent(static_cast<float>(x), static_cast<float>(y)));
+            }
+
+            break;
+        }
     }
 
     return ::DefWindowProcA(hWnd, Msg, wParam, lParam);
 }
 
 template <class T>
-void resolve_gl_function(T& function, const std::string& name)
+void ResolveGLFunction(T& function, const std::string& name)
 {
     const auto address = ::wglGetProcAddress(name.c_str());
     game::ensure(address != nullptr, "Failed to resolve {}", name);
@@ -69,7 +91,7 @@ void resolve_gl_function(T& function, const std::string& name)
     function = reinterpret_cast<T>(address);
 }
 
-void resolve_wgl_functions(HINSTANCE instance)
+void ResolveGLFunctions(HINSTANCE instance)
 {
     ::WNDCLASS wc = {
         .style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC,
@@ -120,22 +142,22 @@ void resolve_wgl_functions(HINSTANCE instance)
 
     game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
 
-    resolve_gl_function(wglCreateContextAttribsARB, "wglCreateContextAttribsARB");
-    resolve_gl_function(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
+    ResolveGLFunction(wglCreateContextAttribsARB, "wglCreateContextAttribsARB");
+    ResolveGLFunction(wglChoosePixelFormatARB, "wglChoosePixelFormatARB");
 
     game::ensure(::wglMakeCurrent(dc, 0) == TRUE, "Failed to unbind context!");
 }
 
-void setup_opengl_debug()
+void SetupOpenGLDebug()
 {
     ::glEnable(GL_DEBUG_OUTPUT);
     ::glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    ::glDebugMessageCallback(opengl_debug_callback, nullptr);
+    ::glDebugMessageCallback(OpenGLDebugCallback, nullptr);
 }
 
 }
 
-void init_opengl(HDC dc)
+void InitOpenGL(HDC dc)
 {
     int pixelFormatAttribs[] = {
         WGL_DRAW_TO_WINDOW_ARB,
@@ -181,9 +203,9 @@ void init_opengl(HDC dc)
     game::ensure(::wglMakeCurrent(dc, context) == TRUE, "Failed to make current context!");
 }
 
-void resolve_global_gl_functions()
+void ResolveGlobalGLFunctions()
 {
-#define RESOLVE(TYPE, NAME) resolve_gl_function(NAME, #NAME);
+#define RESOLVE(TYPE, NAME) ResolveGLFunction(NAME, #NAME);
     FOR_OPENGL_FUNCTIONS(RESOLVE)
 }
 
@@ -229,15 +251,23 @@ Window::Window(std::uint32_t width, std::uint32_t height)
             nullptr),
         ::DestroyWindow};
 
-    m_DC = game::AutoRelease<HDC>(::GetDC(m_Window), [this](auto dc) { ::ReleaseDC(m_Window, dc); });
+    m_DC = AutoRelease<HDC>(::GetDC(m_Window), [this](auto dc) { ::ReleaseDC(m_Window, dc); });
 
     ::ShowWindow(m_Window, SW_SHOW);
     ::UpdateWindow(m_Window);
 
-    resolve_wgl_functions(m_WC.hInstance);
-    init_opengl(m_DC);
-    resolve_global_gl_functions();
-    setup_opengl_debug();
+    const ::RAWINPUTDEVICE rid = ::RAWINPUTDEVICE{
+        .usUsagePage = HID_USAGE_PAGE_GENERIC,
+        .usUsage = HID_USAGE_GENERIC_MOUSE,
+        .dwFlags = RIDEV_INPUTSINK,
+        .hwndTarget = m_Window};
+
+    ensure(::RegisterRawInputDevices(&rid, 1, sizeof(rid)) == TRUE, "failed to register input device");
+
+    ResolveGLFunctions(m_WC.hInstance);
+    InitOpenGL(m_DC);
+    ResolveGlobalGLFunctions();
+    SetupOpenGLDebug();
 
     ::glEnable(GL_DEPTH_TEST);
 }
