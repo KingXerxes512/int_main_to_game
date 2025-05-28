@@ -124,7 +124,11 @@ int main()
             }
             else if constexpr (std::same_as<T, game::MouseEvent>)
             {
-                game::log::debug("{}", arg);
+                static constexpr float sensitivity = 0.001f;
+                const float deltaX = arg.DeltaX() * sensitivity;
+                const float deltaY = arg.DeltaY() * sensitivity;
+                camera.AdjustYaw(deltaX);
+                camera.AdjustPitch(-deltaY);
             }
         };
 
@@ -137,11 +141,38 @@ int main()
                 event = window.PumpEvent();
             }
 
-            const auto velocity = game::Vector3{
-                .x = (key_state[game::Key::D] ? 1.0f : 0.0f) + (key_state[game::Key::A] ? -1.0f : 0.0f),
-                .y = 0.0f,
-                .z = (key_state[game::Key::S] ? 1.0f : 0.0f) + (key_state[game::Key::W] ? -1.0f : 0.0f)};
-            camera.Translate(game::Vector3::Normalize(velocity));
+            game::Vector3 walkDirection{.x = 0.0f, .y = 0.0f, .z = 0.0f};
+            walkDirection = game::Vector3::Normalize(walkDirection);
+
+            if (key_state[game::Key::D])
+            {
+                walkDirection += camera.Right();
+            }
+            else if (key_state[game::Key::A])
+            {
+                walkDirection += -camera.Right();
+            }
+            else if (key_state[game::Key::W])
+            {
+                walkDirection += camera.Direction();
+            }
+            else if (key_state[game::Key::S])
+            {
+                walkDirection += -camera.Direction();
+            }
+            else if (key_state[game::Key::Q])
+            {
+                walkDirection += camera.Up();
+            }
+            else if (key_state[game::Key::E])
+            {
+                walkDirection += -camera.Up();
+            }
+
+            const auto speed = 0.01f;
+            walkDirection *= speed;
+
+            camera.Translate(game::Vector3::Normalize(walkDirection));
 
             renderer.Render(camera, scene);
             window.Swap();

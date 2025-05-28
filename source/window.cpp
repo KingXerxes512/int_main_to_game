@@ -269,6 +269,7 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     ResolveGlobalGLFunctions();
     SetupOpenGLDebug();
 
+    ::wglSwapIntervalEXT(1);
     ::glEnable(GL_DEPTH_TEST);
 }
 

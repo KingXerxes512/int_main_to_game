@@ -21,6 +21,12 @@ class Camera
         float nearPlane,
         float farPlane);
 
+    Vector3 Direction() const;
+    Vector3 Right() const;
+    Vector3 Up() const;
+
+    void AdjustYaw(float adjust);
+    void AdjustPitch(float adjust);
     void Translate(const Vector3& translation);
     std::span<const float> View() const;
     std::span<const float> Projection() const;
@@ -31,6 +37,8 @@ class Camera
     Vector3 m_Position;
     Vector3 m_Direction;
     Vector3 m_Up;
+    float m_Pitch;
+    float m_Yaw;
 };
 
 }

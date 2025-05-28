@@ -30,7 +30,8 @@
     DO(::PFNGLDEBUGMESSAGECALLBACKPROC, glDebugMessageCallback)                                                        \
     DO(::PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation)                                                            \
     DO(::PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv)                                                                \
-    DO(::PFNGLDEBUGMESSAGECONTROLPROC, glDebugMessageControl)
+    DO(::PFNGLDEBUGMESSAGECONTROLPROC, glDebugMessageControl)                                                          \
+    DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;
 FOR_OPENGL_FUNCTIONS(DO_DEFINE)
