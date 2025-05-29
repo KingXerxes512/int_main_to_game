@@ -31,6 +31,15 @@
     DO(::PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation)                                                            \
     DO(::PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv)                                                                \
     DO(::PFNGLDEBUGMESSAGECONTROLPROC, glDebugMessageControl)                                                          \
+    DO(::PFNGLCREATEBUFFERSPROC, glCreateBuffers)                                                                      \
+    DO(::PFNGLNAMEDBUFFERSTORAGEPROC, glNamedBufferStorage)                                                            \
+    DO(::PFNGLCREATEVERTEXARRAYSPROC, glCreateVertexArrays)                                                            \
+    DO(::PFNGLVERTEXARRAYBINDVERTEXBUFFEREXTPROC, glVertexArrayVertexBuffer)                                           \
+    DO(::PFNGLENABLEVERTEXARRAYATTRIBPROC, glEnableVertexArrayAttrib)                                                  \
+    DO(::PFNGLVERTEXARRAYATTRIBFORMATPROC, glVertexArrayAttribFormat)                                                  \
+    DO(::PFNGLVERTEXARRAYATTRIBBINDINGPROC, glVertexArrayAttribBinding)                                                \
+    DO(::PFNGLNAMEDBUFFERSUBDATAPROC, glNamedBufferSubData)                                                            \
+    DO(::PFNGLVERTEXARRAYELEMENTBUFFERPROC, glVertexArrayElementBuffer)                                                \
     DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;
