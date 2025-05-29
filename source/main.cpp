@@ -76,9 +76,7 @@ int main()
             for (auto j = -10; j < 10; ++j)
             {
                 entities.emplace_back(
-                    &mesh,
-                    &material,
-                    game::Vector3{.x = static_cast<float>(i) * 2.5f, .y = 0.0f, .z = static_cast<float>(j) * 2.5f});
+                    &mesh, &material, game::Vector3{static_cast<float>(i) * 2.5f, 0.0f, static_cast<float>(j) * 2.5f});
             }
         }
 
@@ -87,9 +85,9 @@ int main()
                 entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>()};
 
         auto camera = game::Camera(
-            {.x = 3.0f, .y = 3.0f, .z = 10.0f},
-            {.x = 0.0f, .y = 0.0f, .z = 0.0f},
-            {.x = 0.0f, .y = 1.0f, .z = 0.0f},
+            {3.0f, 3.0f, 10.0f},
+            {0.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f},
             std::numbers::pi_v<float> / 4.0f,
             800.0f,
             600.0f,
@@ -141,7 +139,7 @@ int main()
                 event = window.PumpEvent();
             }
 
-            game::Vector3 walkDirection{.x = 0.0f, .y = 0.0f, .z = 0.0f};
+            game::Vector3 walkDirection{0.0f, 0.0f, 0.0f};
             walkDirection = game::Vector3::Normalize(walkDirection);
 
             if (key_state[game::Key::D])

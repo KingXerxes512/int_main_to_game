@@ -6,66 +6,66 @@ namespace
 
 // clang-format off
 //static constexpr game::VertexData vertex_data[] = {
-//    {.position = {.x = 0.0f,  .y = 0.5f,  .z = 0.0f}, .color = {.r = 1.0f, .g = 0.0f, .b = 0.0f}},
-//    {.position = {.x = -0.5f, .y = -0.5f, .z = 0.0f}, .color = {.r = 0.0f, .g = 1.0f, .b = 0.0f}},
-//    {.position = {.x = 0.5f,  .y = -0.5f, .z = 0.0f}, .color = {.r = 0.0f, .g = 0.5f, .b = 1.0f}}
+//    {.position = { 0.0f,  0.5f,  0.0f}, .color = {.r = 1.0f, .g = 0.0f, .b = 0.0f}},
+//    {.position = { -0.5f, -0.5f, 0.0f}, .color = {.r = 0.0f, .g = 1.0f, .b = 0.0f}},
+//    {.position = { 0.5f,  -0.5f, 0.0f}, .color = {.r = 0.0f, .g = 0.5f, .b = 1.0f}}
 //};
 // clang-format on
 
 static constexpr game::VertexData vertex_data[] = {
     // back face
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
 
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
 
     // front face
-    {.position = {.x = -1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
 
-    {.position = {.x = -1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
 
     // left face
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {.x = -1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
 
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
+    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
 
     // right face
-    {.position = {.x = 1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
 
-    {.position = {.x = 1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
+    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
 
     // top face
-    {.position = {.x = -1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
 
-    {.position = {.x = -1.0f, .y = 1.0f, .z = -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {.x = -1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {.x = 1.0f, .y = 1.0f, .z = 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
+    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
 
     // bottom face
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
 
-    {.position = {.x = -1.0f, .y = -1.0f, .z = -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {.x = -1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {.x = 1.0f, .y = -1.0f, .z = 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
+    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
 };
 
 }

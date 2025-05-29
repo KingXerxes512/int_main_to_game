@@ -9,7 +9,7 @@ namespace
 game::Vector3 CreateDirection(float pitch, float yaw)
 {
     return game::Vector3::Normalize(
-        {.x = std::cos(yaw) * std::cos(pitch), .y = std::sin(pitch), .z = std::sin(yaw) * std::cos(pitch)});
+        {std::cos(yaw) * std::cos(pitch), std::sin(pitch), std::sin(yaw) * std::cos(pitch)});
 }
 
 }
@@ -60,9 +60,9 @@ void Camera::AdjustYaw(float adjust)
 
 void Camera::AdjustPitch(float adjust)
 {
-     m_Pitch += adjust;
-     m_Direction = CreateDirection(m_Pitch, m_Yaw);
-     m_View = Mat4::LookAt(m_Position, m_Position + m_Direction, m_Up);
+    m_Pitch += adjust;
+    m_Direction = CreateDirection(m_Pitch, m_Yaw);
+    m_View = Mat4::LookAt(m_Position, m_Position + m_Direction, m_Up);
 }
 
 void Camera::Translate(const Vector3& translation)
