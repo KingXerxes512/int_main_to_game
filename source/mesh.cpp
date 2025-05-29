@@ -26,7 +26,7 @@ namespace game
 Mesh::Mesh()
     : m_VAO(0u, [](auto vao) { ::glDeleteVertexArrays(1, &vao); })
     , m_VBO(0u, [](auto vbo) { ::glDeleteBuffers(1, &vbo); })
-    , m_IndexCount(_countof(indices))
+    , m_IndexCount(static_cast<std::uint32_t>(std::ranges::distance(indices)))
     , m_IndexOffset(sizeof(vertex_data))
 {
     ::glCreateBuffers(1, &m_VBO);
