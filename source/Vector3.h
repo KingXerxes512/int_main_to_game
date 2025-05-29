@@ -53,6 +53,21 @@ struct Vector3
     float z;
 };
 
+constexpr Vector3& operator*=(Vector3& v1, const Vector3& v2)
+{
+    v1.x *= v2.x;
+    v1.y *= v2.y;
+    v1.z *= v2.z;
+
+    return v1;
+}
+
+constexpr Vector3 operator*(const Vector3& v1, const Vector3& v2)
+{
+    auto tmp = v1;
+    return tmp *= v2;
+}
+
 constexpr Vector3& operator*=(Vector3& v, float f)
 {
     v.x *= f;
