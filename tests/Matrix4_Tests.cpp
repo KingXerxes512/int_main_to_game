@@ -34,7 +34,7 @@ TEST(Matrix4, Multiply)
 TEST(Matrix4, LookAt)
 {
     const auto view = game::Mat4::LookAt(
-        {.x = 1.0f, .y = 0.0f, .z = 5.0f}, {.x = 0.0f, .y = 0.0f, .z = 0.0f}, {.x = 0.0f, .y = 1.0f, .z = 0.0f});
+        {1.0f, 0.0f, 5.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f});
 
     const auto expected = game::Mat4{
         {0.980581f,
