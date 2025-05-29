@@ -1,10 +1,3 @@
-#include <iostream>
-#include <numbers>
-#include <print>
-#include <ranges>
-#include <stacktrace>
-#include <unordered_map>
-
 #include "Camera.h"
 #include "Error.h"
 #include "Exception.h"
@@ -18,6 +11,14 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "Window.h"
+
+#include <chrono>
+#include <iostream>
+#include <numbers>
+#include <print>
+#include <ranges>
+#include <stacktrace>
+#include <unordered_map>
 
 namespace
 {
@@ -130,8 +131,13 @@ int main()
             }
         };
 
+        using namespace std::literals::chrono_literals;
+        constexpr auto targetTime = 8.333ms;
+        auto startTime = std::chrono::system_clock::now();
+
         while (running)
         {
+            startTime = std::chrono::system_clock::now();
             auto event = window.PumpEvent();
             while (event && running)
             {
@@ -168,12 +174,14 @@ int main()
             }
 
             const auto speed = 0.01f;
-            walkDirection *= speed;
-
-            camera.Translate(game::Vector3::Normalize(walkDirection));
+            camera.Translate(game::Vector3::Normalize(walkDirection * speed));
 
             renderer.Render(camera, scene);
             window.Swap();
+
+            auto end = std::chrono::system_clock::now();
+            auto diff = targetTime - (end - startTime);
+            std::this_thread::sleep_for(diff);
         }
     }
     catch (const game::Exception& err)
