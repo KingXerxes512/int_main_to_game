@@ -24,7 +24,8 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
         ::glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, camera.Projection().data());
 
         mesh->Bind();
-        ::glDrawArrays(GL_TRIANGLES, 0, 36);
+        ::glDrawElements(
+            GL_TRIANGLES, mesh->IndexCount(), GL_UNSIGNED_INT, reinterpret_cast<void*>(mesh->IndexOffset()));
         mesh->Unbind();
     }
 }

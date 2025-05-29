@@ -4,69 +4,19 @@
 namespace
 {
 
-// clang-format off
-//static constexpr game::VertexData vertex_data[] = {
-//    {.position = { 0.0f,  0.5f,  0.0f}, .color = {.r = 1.0f, .g = 0.0f, .b = 0.0f}},
-//    {.position = { -0.5f, -0.5f, 0.0f}, .color = {.r = 0.0f, .g = 1.0f, .b = 0.0f}},
-//    {.position = { 0.5f,  -0.5f, 0.0f}, .color = {.r = 0.0f, .g = 0.5f, .b = 1.0f}}
-//};
-// clang-format on
+constexpr game::VertexData vertex_data[] = {
+    {.position = {-0.5f, -0.5f, -0.5f}, .color = {1.0f, 0.0f, 0.0f}},
+    {.position = {0.5f, -0.5f, -0.5f}, .color = {0.0f, 1.0f, 0.0f}},
+    {.position = {0.5f, 0.5f, -0.5f}, .color = {0.0f, 0.0f, 1.0f}},
+    {.position = {-0.5f, 0.5f, -0.5f}, .color = {1.0f, 1.0f, 0.0f}},
 
-static constexpr game::VertexData vertex_data[] = {
-    // back face
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
+    {.position = {-0.5f, -0.5f, 0.5f}, .color = {1.0f, 0.0f, 0.0f}},
+    {.position = {0.5f, -0.5f, 0.5f}, .color = {0.0f, 1.0f, 0.0f}},
+    {.position = {0.5f, 0.5f, 0.5f}, .color = {0.0f, 0.0f, 1.0f}},
+    {.position = {-0.5f, 0.5f, 0.5f}, .color = {1.0f, 1.0f, 0.0f}}};
 
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.85f, .g = 0.22f, .b = 0.47f}},
-
-    // front face
-    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-
-    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.33f, .g = 0.76f, .b = 0.87f}},
-
-    // left face
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.29f, .g = 0.68f, .b = 0.31f}},
-
-    // right face
-    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-
-    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.91f, .g = 0.43f, .b = 0.15f}},
-
-    // top face
-    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-
-    {.position = {-1.0f, 1.0f, -1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {-1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-    {.position = {1.0f, 1.0f, 1.0f}, .color = {.r = 0.56f, .g = 0.84f, .b = 0.82f}},
-
-    // bottom face
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-
-    {.position = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {-1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-    {.position = {1.0f, -1.0f, 1.0f}, .color = {.r = 0.94f, .g = 0.91f, .b = 0.17f}},
-};
+constexpr ::GLuint indices[] = {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 0, 3, 7, 0, 7, 4,
+                                1, 2, 6, 1, 6, 5, 0, 1, 5, 0, 5, 4, 3, 2, 6, 3, 6, 7};
 
 }
 
@@ -76,7 +26,30 @@ namespace game
 Mesh::Mesh()
     : m_VAO(0u, [](auto vao) { ::glDeleteVertexArrays(1, &vao); })
     , m_VBO(0u, [](auto vbo) { ::glDeleteBuffers(1, &vbo); })
+    , m_IndexCount(_countof(indices))
+    , m_IndexOffset(sizeof(vertex_data))
 {
+    ::glCreateBuffers(1, &m_VBO);
+    ::glNamedBufferStorage(m_VBO, sizeof(vertex_data) + sizeof(indices), nullptr, GL_DYNAMIC_STORAGE_BIT);
+    ::glNamedBufferSubData(m_VBO, 0, sizeof(vertex_data), vertex_data);
+    ::glNamedBufferSubData(m_VBO, sizeof(vertex_data), sizeof(indices), indices);
+
+    ::glCreateVertexArrays(1, &m_VAO);
+
+    ::glVertexArrayVertexBuffer(m_VAO, 0, m_VBO, 0, sizeof(VertexData));
+    ::glVertexArrayElementBuffer(m_VAO, m_VBO);
+
+    ::glEnableVertexArrayAttrib(m_VAO, 0); // enable position
+    ::glEnableVertexArrayAttrib(m_VAO, 1); // enable color
+
+    ::glVertexArrayAttribFormat(m_VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(VertexData, position));
+    ::glVertexArrayAttribFormat(m_VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(VertexData, color));
+
+    ::glVertexArrayAttribBinding(m_VAO, 0, 0);
+    ::glVertexArrayAttribBinding(m_VAO, 1, 0);
+
+    ////////////
+#if OLD
     ::glGenVertexArrays(1, &m_VAO);
 
     ::glGenBuffers(1, &m_VBO);
@@ -91,6 +64,7 @@ Mesh::Mesh()
     ::glEnableVertexAttribArray(1);
 
     Unbind();
+#endif
 }
 
 void Mesh::Bind() const
@@ -101,6 +75,16 @@ void Mesh::Bind() const
 void Mesh::Unbind() const
 {
     ::glBindVertexArray(0);
+}
+
+std::uint32_t Mesh::IndexCount() const
+{
+    return m_IndexCount;
+}
+
+std::uintptr_t Mesh::IndexOffset() const
+{
+    return m_IndexOffset;
 }
 
 ::GLuint Mesh::VAO() const
