@@ -1,4 +1,6 @@
 #include "Mesh.h"
+#include "Buffer.h"
+#include "BufferWriter.h"
 #include "VertexData.h"
 
 namespace
@@ -25,19 +27,20 @@ namespace game
 
 Mesh::Mesh()
     : m_VAO(0u, [](auto vao) { ::glDeleteVertexArrays(1, &vao); })
-    , m_VBO(0u, [](auto vbo) { ::glDeleteBuffers(1, &vbo); })
+    , m_VBO{sizeof(vertex_data) + sizeof(indices)}
     , m_IndexCount(static_cast<std::uint32_t>(std::ranges::distance(indices)))
     , m_IndexOffset(sizeof(vertex_data))
 {
-    ::glCreateBuffers(1, &m_VBO);
-    ::glNamedBufferStorage(m_VBO, sizeof(vertex_data) + sizeof(indices), nullptr, GL_DYNAMIC_STORAGE_BIT);
-    ::glNamedBufferSubData(m_VBO, 0, sizeof(vertex_data), vertex_data);
-    ::glNamedBufferSubData(m_VBO, sizeof(vertex_data), sizeof(indices), indices);
+    {
+        BufferWriter writer{m_VBO};
+        writer.Write(vertex_data);
+        writer.Write(indices);
+    }
 
     ::glCreateVertexArrays(1, &m_VAO);
 
-    ::glVertexArrayVertexBuffer(m_VAO, 0, m_VBO, 0, sizeof(VertexData));
-    ::glVertexArrayElementBuffer(m_VAO, m_VBO);
+    ::glVertexArrayVertexBuffer(m_VAO, 0, m_VBO.Native_Handle(), 0, sizeof(VertexData));
+    ::glVertexArrayElementBuffer(m_VAO, m_VBO.Native_Handle());
 
     ::glEnableVertexArrayAttrib(m_VAO, 0); // enable position
     ::glEnableVertexArrayAttrib(m_VAO, 1); // enable color
@@ -94,7 +97,7 @@ std::uintptr_t Mesh::IndexOffset() const
 
 ::GLuint Mesh::VBO() const
 {
-    return m_VBO;
+    return m_VBO.Native_Handle();
 }
 
 }

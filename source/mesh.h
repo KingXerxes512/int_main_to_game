@@ -2,6 +2,7 @@
 
 #include "AutoRelease.h"
 #include "Opengl.h"
+#include "Buffer.h"
 
 namespace game
 {
@@ -22,7 +23,7 @@ class Mesh
 
   private:
     AutoRelease<::GLuint> m_VAO;
-    AutoRelease<::GLuint> m_VBO;
+    Buffer m_VBO;
     std::uint32_t m_IndexCount;
     std::uintptr_t m_IndexOffset;
 };

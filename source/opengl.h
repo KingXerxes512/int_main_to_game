@@ -40,6 +40,8 @@
     DO(::PFNGLVERTEXARRAYATTRIBBINDINGPROC, glVertexArrayAttribBinding)                                                \
     DO(::PFNGLNAMEDBUFFERSUBDATAPROC, glNamedBufferSubData)                                                            \
     DO(::PFNGLVERTEXARRAYELEMENTBUFFERPROC, glVertexArrayElementBuffer)                                                \
+    DO(::PFNGLBINDBUFFERBASEPROC, glBindBufferBase)                                                                    \
+    DO(::PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog)                                                                \
     DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;

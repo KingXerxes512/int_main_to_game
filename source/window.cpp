@@ -1,6 +1,7 @@
 #include <print>
 #include <queue>
 
+#include "Exception.h"
 #include "Key.h"
 #include "KeyEvent.h"
 #include "Log.h"
@@ -37,7 +38,44 @@ void APIENTRY OpenGLDebugCallback(
         case GL_DEBUG_SEVERITY_NOTIFICATION: sev = "GL_DEBUG_SEVERITY_NOTIFICATION"; break;
     }
 
-    std::println("{} {} {} {} {} {}", source, type, id, sev, length, message);
+    std::string ty = "?";
+    switch (type)
+    {
+        case GL_DEBUG_TYPE_ERROR:
+        {
+            ty = "GL_DEBUG_TYPE_ERROR";
+            throw game::Exception(std::format("{} {} {} {} {} {}", source, ty, id, sev, length, message));
+        }
+        case GL_DEBUG_TYPE_OTHER:
+        {
+            ty = "GL_DEBUG_TYPE_OTHER";
+            game::log::debug("{} {} {} {} {} {}", source, ty, id, sev, length, message);
+            break;
+        }
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+        {
+            ty = "GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR";
+            game::log::debug("{} {} {} {} {} {}", source, ty, id, sev, length, message);
+            break;
+        }
+        case GL_DEBUG_TYPE_PERFORMANCE:
+        {
+            ty = "GL_DEBUG_TYPE_PERFORMANCE";
+            game::log::warn("{} {} {} {} {} {}", source, ty, id, sev, length, message);
+            break;
+        }
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+        {
+            ty = "GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR";
+            game::log::warn("{} {} {} {} {} {}", source, ty, id, sev, length, message);
+            break;
+        }
+        default:
+        {
+            game::log::debug("{} {} {} {} {} {}", source, type, id, sev, length, message);
+            break;
+        }
+    }
 }
 
 bool g_Running = true;
