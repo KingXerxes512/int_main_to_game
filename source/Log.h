@@ -15,7 +15,7 @@ enum class Level
     DEBUG,
     INFO,
     WARN,
-    ERROR
+    ERR
 };
 
 template <Level L, class... Args>
@@ -27,7 +27,7 @@ struct Print
         constexpr const char* logLevel = L == Level::DEBUG   ? "[DEBUG]"
                                          : L == Level::INFO  ? "[INFO] "
                                          : L == Level::WARN  ? "[WARN] "
-                                         : L == Level::ERROR ? "[ERROR]"
+                                         : L == Level::ERR ? "[ERROR]"
                                                              : "[?]";
 
         std::println(
@@ -50,6 +50,6 @@ template <class... Args>
 using warn = Print<Level::WARN, Args...>;
 
 template <class... Args>
-using error = Print<Level::ERROR, Args...>;
+using error = Print<Level::ERR, Args...>;
 
 }

@@ -11,6 +11,7 @@
 #include "ResourceLoader.h"
 #include "Scene.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "Window.h"
 
 #include <chrono>
@@ -32,6 +33,8 @@ int main(int argc, char** argv)
         game::ResourceLoader loader{argv[1]};
         const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
         const auto fragment_shader_src = loader.Load_String("simple_frag.glsl");
+
+        [[maybe_unused]] game::Texture texture{loader.Load_Binary("container2.png"), 500, 500};
 
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);

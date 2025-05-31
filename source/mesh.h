@@ -1,8 +1,9 @@
 #pragma once
 
 #include "AutoRelease.h"
-#include "Opengl.h"
 #include "Buffer.h"
+#include "Opengl.h"
+#include "Log.h"
 
 namespace game
 {

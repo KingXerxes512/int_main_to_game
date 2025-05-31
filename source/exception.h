@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <stacktrace>
 #include <stdexcept>
 #include <string>

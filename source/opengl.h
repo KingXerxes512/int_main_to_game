@@ -42,6 +42,11 @@
     DO(::PFNGLVERTEXARRAYELEMENTBUFFERPROC, glVertexArrayElementBuffer)                                                \
     DO(::PFNGLBINDBUFFERBASEPROC, glBindBufferBase)                                                                    \
     DO(::PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog)                                                                \
+    DO(::PFNGLCREATETEXTURESPROC, glCreateTextures)                                                                    \
+    DO(::PFNGLTEXTURESTORAGE2DPROC, glTextureStorage2D)                                                                \
+    DO(::PFNGLTEXTURESUBIMAGE2DPROC, glTextureSubImage2D)                                                              \
+    DO(::PFNGLCREATESAMPLERSPROC, glCreateSamplers)                                                                    \
+    DO(::PFNGLDELETESAMPLERSPROC, glDeleteSamplers)                                                                    \
     DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;

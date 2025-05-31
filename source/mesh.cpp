@@ -7,15 +7,31 @@ namespace
 {
 
 constexpr game::VertexData vertex_data[] = {
-    {.position = {-0.5f, -0.5f, -0.5f}, .color = {1.0f, 0.0f, 0.0f}},
-    {.position = {0.5f, -0.5f, -0.5f}, .color = {0.0f, 1.0f, 0.0f}},
-    {.position = {0.5f, 0.5f, -0.5f}, .color = {0.0f, 0.0f, 1.0f}},
-    {.position = {-0.5f, 0.5f, -0.5f}, .color = {1.0f, 1.0f, 0.0f}},
 
-    {.position = {-0.5f, -0.5f, 0.5f}, .color = {1.0f, 0.0f, 0.0f}},
-    {.position = {0.5f, -0.5f, 0.5f}, .color = {0.0f, 1.0f, 0.0f}},
-    {.position = {0.5f, 0.5f, 0.5f}, .color = {0.0f, 0.0f, 1.0f}},
-    {.position = {-0.5f, 0.5f, 0.5f}, .color = {1.0f, 1.0f, 0.0f}}};
+    {.position = {-0.5f, -0.5f, -0.5f}, .uv = {-1.0f, 0.0f}}, //
+    {.position = {0.5f, -0.5f, 0.5f}, .uv = {1.0f, 0.0f}},    //
+    {.position = {0.5f, 0.5f, 0.5f}, .uv = {1.0f, 1.0f}},     //
+    {.position = {-0.5f, 0.5f, 0.5f}, .uv = {0.0f, 1.0f}},    //
+    {.position = {-0.5f, -0.5f, -0.5f}, .uv = {0.0f, 0.0f}},  //
+    {.position = {0.5f, -0.5f, -0.5f}, .uv = {1.0f, 0.0f}},   //
+    {.position = {0.5f, 0.5f, -0.5f}, .uv = {1.0f, 1.0f}},    //
+    {.position = {-0.5f, 0.5f, -0.5f}, .uv = {0.0f, 1.0f}},   //
+    {.position = {-0.5f, -0.5f, -0.5f}, .uv = {0.0f, 0.0f}},  //
+    {.position = {-0.5f, -0.5f, 0.5f}, .uv = {1.0f, 0.0f}},   //
+    {.position = {-0.5f, 0.5f, 0.5f}, .uv = {1.0f, 1.0f}},    //
+    {.position = {-0.5f, 0.5f, -0.5f}, .uv = {0.0f, 1.0f}},   //
+    {.position = {0.5f, -0.5f, -0.5f}, .uv = {0.0f, 0.0f}},   //
+    {.position = {0.5f, -0.5f, 0.5f}, .uv = {1.0f, 0.0f}},    //
+    {.position = {0.5f, 0.5f, 0.5f}, .uv = {1.0f, 1.0f}},     //
+    {.position = {0.5f, 0.5f, -0.5f}, .uv = {0.0f, 1.0f}},    //
+    {.position = {-0.5f, 0.5f, -0.5f}, .uv = {0.0f, 0.0f}},   //
+    {.position = {0.5f, 0.5f, -0.5f}, .uv = {1.0f, 0.0f}},    //
+    {.position = {0.5f, 0.5f, 0.5f}, .uv = {1.0f, 1.0f}},     //
+    {.position = {-0.5f, 0.5f, 0.5f}, .uv = {0.0f, 1.0f}},    //
+    {.position = {-0.5f, -0.5f, -0.5f}, .uv = {0.0f, 0.0f}},  //
+    {.position = {0.5f, -0.5f, -0.5f}, .uv = {1.0f, 0.0f}},   //
+    {.position = {0.5f, -0.5f, 0.5f}, .uv = {1.0f, 1.0f}},    //
+    {.position = {-0.5f, -0.5f, 0.5f}, .uv = {0.0f, 1.0f}}};
 
 constexpr ::GLuint indices[] = {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 0, 3, 7, 0, 7, 4,
                                 1, 2, 6, 1, 6, 5, 0, 1, 5, 0, 5, 4, 3, 2, 6, 3, 6, 7};

@@ -1,4 +1,5 @@
 #include "Buffer.h"
+#include "Error.h"
 
 namespace game
 {
@@ -7,6 +8,7 @@ Buffer::Buffer(std::uint32_t size)
     : m_Buffer{0u, [](auto buffer) { ::glDeleteBuffers(1, &buffer); }}
 {
     ::glCreateBuffers(1, &m_Buffer);
+    ensure(m_Buffer, "Failed to create buffer!");
     ::glNamedBufferStorage(m_Buffer, size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 }
 
