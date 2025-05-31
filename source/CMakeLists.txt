@@ -2,6 +2,10 @@ file(GLOB Sources
 	*.cpp
 )
 
+file(GLOB Shaders
+	../assets/*.glsl
+)
+
 file(GLOB Headers
 	*.h
 )
@@ -11,7 +15,7 @@ file(GLOB opengl_headers
 	../third_party/opengl/glext.h
 )
 
-add_executable(Game ${Sources} ${Headers} ${opengl_headers})
+add_executable(Game ${Sources} ${Headers} ${opengl_headers} ${Shaders})
 
 target_link_libraries(Game PUBLIC opengl32.lib)
 target_include_directories(Game PRIVATE ../third_party ../third_party/opengl)
@@ -26,4 +30,7 @@ target_include_directories(Game PUBLIC source)
 
 source_group(Headers FILES ${Headers})
 source_group(Headers/OpenGL FILES ${opengl_headers})
+source_group(Shaders FILES ${Shaders})
 source_group(Sources FILES ${Sources})
+
+file(COPY_FILE ../Game.vcxproj.user  ../build/source/Game.vcxproj.user)
