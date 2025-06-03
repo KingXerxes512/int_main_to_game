@@ -47,6 +47,9 @@
     DO(::PFNGLTEXTURESUBIMAGE2DPROC, glTextureSubImage2D)                                                              \
     DO(::PFNGLCREATESAMPLERSPROC, glCreateSamplers)                                                                    \
     DO(::PFNGLDELETESAMPLERSPROC, glDeleteSamplers)                                                                    \
+    DO(::PFNGLBINDTEXTUREUNITPROC, glBindTextureUnit)                                                                  \
+    DO(::PFNGLBINDSAMPLERPROC, glBindSampler)                                                                          \
+    DO(::PFNGLUNIFORM1IPROC, glUniform1i)                                                                              \
     DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;

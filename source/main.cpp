@@ -9,6 +9,7 @@
 #include "Opengl.h"
 #include "Renderer.h"
 #include "ResourceLoader.h"
+#include "Sampler.h"
 #include "Scene.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -35,6 +36,7 @@ int main(int argc, char** argv)
         const auto fragment_shader_src = loader.Load_String("simple_frag.glsl");
 
         [[maybe_unused]] game::Texture texture{loader.Load_Binary("container2.png"), 500, 500};
+        game::Sampler sampler{};
 
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
@@ -49,7 +51,11 @@ int main(int argc, char** argv)
             for (auto j = -10; j < 10; ++j)
             {
                 entities.emplace_back(
-                    &mesh, &material, game::Vector3{static_cast<float>(i) * 2.5f, 0.0f, static_cast<float>(j) * 2.5f});
+                    &mesh,
+                    &material,
+                    game::Vector3{static_cast<float>(i) * 2.5f, 0.0f, static_cast<float>(j) * 2.5f},
+                    &texture,
+                    &sampler);
             }
         }
 

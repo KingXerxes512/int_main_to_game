@@ -3,9 +3,11 @@
 #include <span>
 
 #include "Material.h"
-#include "Vector3.h"
 #include "Matrix4.h"
 #include "Mesh.h"
+#include "Sampler.h"
+#include "Texture.h"
+#include "Vector3.h"
 
 namespace game
 {
@@ -13,7 +15,12 @@ namespace game
 class Entity
 {
   public:
-    Entity(const game::Mesh* mesh, const game::Material* material, const game::Vector3& position);
+    Entity(
+        const game::Mesh* mesh,
+        const game::Material* material,
+        const game::Vector3& position,
+        const Texture* texture,
+        const Sampler* sampler);
 
     const game::Mesh* Mesh() const
     {
@@ -27,10 +34,15 @@ class Entity
 
     std::span<const float> Model() const;
 
+    const Texture* Texture() const;
+    const Sampler* Sampler() const;
+
   private:
     const game::Mesh* m_Mesh;
     const game::Material* m_Material;
     Mat4 m_Model;
+    const game::Texture* m_Texture;
+    const game::Sampler* m_Sampler;
 };
 
 }

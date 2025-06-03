@@ -33,8 +33,8 @@ constexpr game::VertexData vertex_data[] = {
     {.position = {0.5f, -0.5f, 0.5f}, .uv = {1.0f, 1.0f}},    //
     {.position = {-0.5f, -0.5f, 0.5f}, .uv = {0.0f, 1.0f}}};
 
-constexpr ::GLuint indices[] = {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 0, 3, 7, 0, 7, 4,
-                                1, 2, 6, 1, 6, 5, 0, 1, 5, 0, 5, 4, 3, 2, 6, 3, 6, 7};
+constexpr ::GLuint indices[] = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,  8,  9,  10, 10, 11, 8,
+                                12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
 
 }
 
@@ -62,7 +62,7 @@ Mesh::Mesh()
     ::glEnableVertexArrayAttrib(m_VAO, 1); // enable color
 
     ::glVertexArrayAttribFormat(m_VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(VertexData, position));
-    ::glVertexArrayAttribFormat(m_VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(VertexData, color));
+    ::glVertexArrayAttribFormat(m_VAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(VertexData, uv));
 
     ::glVertexArrayAttribBinding(m_VAO, 0, 0);
     ::glVertexArrayAttribBinding(m_VAO, 1, 0);
