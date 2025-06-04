@@ -1,12 +1,24 @@
 #include "Renderer.h"
 #include "BufferWriter.h"
 #include "Camera.h"
+#include "Color.h"
+
+namespace
+{
+
+struct LightBuffer
+{
+    alignas(16) game::Color ambient;
+};
+
+}
 
 namespace game
 {
 
 Renderer::Renderer()
     : m_CameraBuffer(sizeof(Mat4) * 2u)
+    , m_LightBuffer(sizeof(LightBuffer))
 {
 }
 
@@ -22,12 +34,21 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
 
     ::glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_CameraBuffer.Native_Handle());
 
-    for (const auto* entity : scene.m_Entities)
+    {
+        LightBuffer light{.ambient = scene.ambient};
+        BufferWriter writer{m_LightBuffer};
+        writer.Write(light);
+    }
+
+    ::glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LightBuffer.Native_Handle());
+
+    for (const auto* entity : scene.entities)
     {
         const auto* material = entity->Material();
         const auto* mesh = entity->Mesh();
         const auto* texture = entity->Texture();
         const auto* sampler = entity->Sampler();
+
         ::glUseProgram(material->Native_Handle());
 
         const GLint model_uniform = ::glGetUniformLocation(material->Native_Handle(), "model");

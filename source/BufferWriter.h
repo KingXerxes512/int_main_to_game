@@ -12,6 +12,13 @@ class BufferWriter
   public:
     BufferWriter(const Buffer& buffer);
 
+    template <class T>
+    void Write(const T& obj) requires (std::is_trivially_copyable_v<T>)
+    {
+        auto spn = std::span<const T>{&obj, 1};
+        Write(spn);
+    }
+
     template <class T, std::size_t N>
     void Write(const T (&data)[N])
     {

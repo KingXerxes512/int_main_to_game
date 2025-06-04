@@ -24,12 +24,16 @@ Texture::Texture(std::span<const std::byte> data, std::uint32_t width, std::uint
     ensure(raw_data, "Failed to parse texure data!");
     ensure(static_cast<std::uint32_t>(w) == width, "Width has changed!");
     ensure(static_cast<std::uint32_t>(h) == height, "Height has changed!");
-    ensure(numChannels == 4, "Incorrect number of channels");
 
     ::glCreateTextures(GL_TEXTURE_2D, 1, &m_Handle);
 
-    ::glTextureStorage2D(m_Handle, 1, GL_RGBA8, width, height);
-    ::glTextureSubImage2D(m_Handle, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, raw_data.get());
+    GLenum storageInternalFormat = numChannels == 4 ? GL_RGBA8 : numChannels == 3 ? GL_RGB8 : 0;
+    ensure(storageInternalFormat != 0, "Unsupported storage internal format!");
+    ::glTextureStorage2D(m_Handle, 1, storageInternalFormat, width, height);
+
+    const GLenum subImageInternalFormat = numChannels == 4 ? GL_RGBA : numChannels == 3 ? GL_RGB : 0;
+    ensure(subImageInternalFormat != 0, "Unsupported subImageInternalFormat!");
+    ::glTextureSubImage2D(m_Handle, 0, 0, 0, width, height, subImageInternalFormat, GL_UNSIGNED_BYTE, raw_data.get());
 }
 
 ::GLuint Texture::Native_Handle() const

@@ -60,8 +60,9 @@ int main(int argc, char** argv)
         }
 
         const auto scene = game::Scene{
-            .m_Entities =
-                entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>()};
+            .entities =
+                entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>(),
+            .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f}};
 
         auto camera = game::Camera(
             {1.0f, 3.0f, 1.0f},

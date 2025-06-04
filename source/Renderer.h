@@ -19,6 +19,7 @@ class Renderer
 
   private:
     Buffer m_CameraBuffer;
+    Buffer m_LightBuffer;
 };
 
 }
