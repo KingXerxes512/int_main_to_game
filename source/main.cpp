@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Entity.h"
 #include "Error.h"
 #include "Exception.h"
 #include "KeyEvent.h"
@@ -53,16 +54,19 @@ int main(int argc, char** argv)
                 entities.emplace_back(
                     &mesh,
                     &material,
-                    game::Vector3{static_cast<float>(i) * 2.5f, 0.0f, static_cast<float>(j) * 2.5f},
+                    game::Vector3{static_cast<float>(i) * 3.5f, 0.0f, static_cast<float>(j) * 3.5f},
                     &texture,
                     &sampler);
             }
         }
 
-        const auto scene = game::Scene{
+        auto scene = game::Scene{
             .entities =
                 entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>(),
-            .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f}};
+            .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f},                                                    //
+            .directional = {.direction = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}, //
+            .point = {.position = {0.0f, 8.0f, 0.0f}, .color = {.r = 0.8f, .g = 0.8f, .b = 0.8f}}            //
+        };
 
         auto camera = game::Camera(
             {1.0f, 3.0f, 1.0f},
@@ -155,7 +159,13 @@ int main(int argc, char** argv)
             const auto speed = 0.01f;
             camera.Translate(game::Vector3::Normalize(walkDirection * speed));
 
-            renderer.Render(camera, scene);
+            static auto t = 0.0f;
+            t += 0.1f;
+
+            scene.point.position.x = std::sin(t) * 10.0f;
+            scene.point.position.z = std::cos(t) * 10.0f;
+
+                renderer.Render(camera, scene);
             window.Swap();
 
             auto end = std::chrono::system_clock::now();

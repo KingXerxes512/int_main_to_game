@@ -23,13 +23,13 @@ inline void ensure(bool predicate, std::string_view msg, Args&&... args)
 template <class T, T Invalid, class... Args>
 inline void ensure(AutoRelease<T, Invalid>& obj, std::string_view msg, Args&&... args)
 {
-    ensure(!!obj, msg, std::forward<Args>(args)...);
+    ensure(!!obj, msg, std::forward<Args&&>(args)...);
 }
 
 template <class T, class D, class... Args>
 inline void ensure(std::unique_ptr<T, D>& obj, std::string_view msg, Args&&... args)
 {
-    ensure(!!obj, msg, std::forward<Args>(args)...);
+    ensure(!!obj, msg, std::forward<Args&&>(args)...);
 }
 
 }

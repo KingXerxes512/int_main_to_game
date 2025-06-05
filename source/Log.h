@@ -21,7 +21,7 @@ enum class Level
 template <Level L, class... Args>
 struct Print
 {
-    Print(const char* msg, const Args&... args, std::source_location loc = std::source_location::current())
+    Print(const char* msg, Args&&... args, std::source_location loc = std::source_location::current())
     {
         std::lock_guard lk(log_mutex);
         constexpr const char* logLevel = L == Level::DEBUG   ? "[DEBUG]"
@@ -38,7 +38,7 @@ struct Print
 // This allows for us to have Args... and also defaulted args at the end
 // It basically takes all the given args to Args... and then leaves the defaulted arg to be default
 template <Level L, class... Args>
-Print(const char*, Args...) -> Print<L, Args...>;
+Print(const char*, Args&&...) -> Print<L, Args...>;
 
 template <class... Args>
 using debug = Print<Level::DEBUG, Args...>;

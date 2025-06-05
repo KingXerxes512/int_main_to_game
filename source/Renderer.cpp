@@ -2,14 +2,22 @@
 #include "BufferWriter.h"
 #include "Camera.h"
 #include "Color.h"
+#include "Entity.h"
 
 namespace
 {
 
+#pragma warning(push)
+#pragma warning(disable : 4324)
 struct LightBuffer
 {
     alignas(16) game::Color ambient;
+    alignas(16) game::Vector3 direction;
+    alignas(16) game::Color direction_color;
+    alignas(16) game::Vector3 point;
+    alignas(16) game::Color point_color;
 };
+#pragma warning(pop)
 
 }
 
@@ -35,9 +43,15 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
     ::glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_CameraBuffer.Native_Handle());
 
     {
-        LightBuffer light{.ambient = scene.ambient};
+        LightBuffer light_buffer{
+            .ambient = scene.ambient,
+            .direction = scene.directional.direction,
+            .direction_color = scene.directional.color,
+            .point = scene.point.position,
+            .point_color = scene.point.color};
+
         BufferWriter writer{m_LightBuffer};
-        writer.Write(light);
+        writer.Write(light_buffer);
     }
 
     ::glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LightBuffer.Native_Handle());

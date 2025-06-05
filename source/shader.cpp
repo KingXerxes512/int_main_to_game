@@ -34,13 +34,12 @@ Shader::Shader(std::string_view source, ShaderType type)
     ::GLint result;
     ::glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &result);
 
-    char errorLog[512] = {0};
     if (!result)
     {
-        glGetShaderInfoLog(m_Handle, 512, nullptr, &errorLog[0]);
+        char errorLog[512] = {0};
+        glGetShaderInfoLog(m_Handle, 512, nullptr, errorLog);
+        ensure(result, "Failed to compile shader {} Reason: {}", type, errorLog);
     }
-
-    ensure(result, "Failed to compile shader {} Reason: {}", type, errorLog);
 }
 
 ShaderType Shader::Type() const

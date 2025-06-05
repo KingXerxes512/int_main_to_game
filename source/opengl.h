@@ -50,6 +50,8 @@
     DO(::PFNGLBINDTEXTUREUNITPROC, glBindTextureUnit)                                                                  \
     DO(::PFNGLBINDSAMPLERPROC, glBindSampler)                                                                          \
     DO(::PFNGLUNIFORM1IPROC, glUniform1i)                                                                              \
+    DO(::PFNGLGETPROGRAMIVPROC, glGetProgramiv)                                                                        \
+    DO(::PFNGLGETPROGRAMINFOLOGPROC, glGetProgramInfoLog)                                                              \
     DO(::PFNWGLSWAPINTERVALEXTPROC, wglSwapIntervalEXT)
 
 #define DO_DEFINE(TYPE, NAME) inline TYPE NAME;
