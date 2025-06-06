@@ -5,7 +5,15 @@ in vec2 texCoord;
 in vec4 fragCoord;
 out vec4 frag_color;
 
-uniform sampler2D tex;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+
+layout(std140, binding = 0) uniform camera
+{
+    mat4 view;
+    mat4 projection;
+    vec3 eye;
+};
 
 layout(std140, binding = 1) uniform lights
 {
@@ -31,14 +39,18 @@ vec3 calcDirection()
 vec3 calcPoint()
 {
     vec3 lightDir = normalize(point - fragCoord.xyz);
-    float diff = max(dot(normal, lightDir), 0.0) * 50.0;
+    float diff = max(dot(normal, lightDir), 0.0) * 25.0;
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(normalize(eye - fragCoord.xyz), reflectDir), 0.0), 32) * (50.0 * texture(tex1, texCoord).r);
+
     float intensity = length(point - fragCoord.xyz);
-    return (diff / intensity) * direction_color;
+    return ((diff + spec) / intensity) * direction_color;
 }
 
 void main()
 {
-    vec4 sourceColor = texture(tex, texCoord);
+    vec4 sourceColor = texture(tex0, texCoord);
     vec3 amb_color = calcAmbient();
     vec3 dir_color = calcDirection();
     vec3 point_color = calcPoint();

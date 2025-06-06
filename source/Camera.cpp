@@ -82,4 +82,9 @@ std::span<const float> Camera::Projection() const
     return m_Projection.Data();
 }
 
+Vector3 Camera::Position() const
+{
+    return m_Position;
+}
+
 }

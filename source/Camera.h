@@ -30,6 +30,7 @@ class Camera
     void Translate(const Vector3& translation);
     std::span<const float> View() const;
     std::span<const float> Projection() const;
+    Vector3 Position() const;
 
   private:
     Mat4 m_View;

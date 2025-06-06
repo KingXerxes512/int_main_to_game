@@ -14,6 +14,7 @@ layout(std140, binding = 0) uniform camera
 {
     mat4 view;
     mat4 projection;
+    vec3 eye;
 };
 
 void main()

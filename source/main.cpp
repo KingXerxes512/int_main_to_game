@@ -36,7 +36,8 @@ int main(int argc, char** argv)
         const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
         const auto fragment_shader_src = loader.Load_String("simple_frag.glsl");
 
-        [[maybe_unused]] game::Texture texture{loader.Load_Binary("container2.png"), 500, 500};
+        game::Texture texture{loader.Load_Binary("container2.png"), 500, 500};
+        game::Texture specMap{loader.Load_Binary("container2_specular.png"), 500, 500};
         game::Sampler sampler{};
 
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
@@ -47,6 +48,8 @@ int main(int argc, char** argv)
 
         auto entities = std::vector<game::Entity>{};
 
+        std::vector<const game::Texture*> texPtrs = {&texture, &specMap};
+
         for (auto i = -10; i < 10; ++i)
         {
             for (auto j = -10; j < 10; ++j)
@@ -55,7 +58,7 @@ int main(int argc, char** argv)
                     &mesh,
                     &material,
                     game::Vector3{static_cast<float>(i) * 3.5f, 0.0f, static_cast<float>(j) * 3.5f},
-                    &texture,
+                    texPtrs,
                     &sampler);
             }
         }
@@ -65,7 +68,7 @@ int main(int argc, char** argv)
                 entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>(),
             .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f},                                                    //
             .directional = {.direction = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}, //
-            .point = {.position = {0.0f, 8.0f, 0.0f}, .color = {.r = 0.8f, .g = 0.8f, .b = 0.8f}}            //
+            .point = {.position = {5.0f, 5.0f, 0.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}            //
         };
 
         auto camera = game::Camera(
@@ -77,10 +80,6 @@ int main(int argc, char** argv)
             600.0f,
             0.001f,
             100.0f);
-
-        /*game::Entity e1(&mesh, &material, game::Vector3{0.0f, 0.0f, 0.0f});
-        game::Entity e2(&mesh, &material, game::Vector3{2.5f, 2.0f, -1.5f});
-        auto scene = game::Scene{.m_Entities = {&e1, &e2}};*/
 
         std::unordered_map<game::Key, bool> key_state{
             {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
@@ -160,7 +159,7 @@ int main(int argc, char** argv)
             camera.Translate(game::Vector3::Normalize(walkDirection * speed));
 
             static auto t = 0.0f;
-            t += 0.1f;
+            t += 0.01f;
 
             scene.point.position.x = std::sin(t) * 10.0f;
             scene.point.position.z = std::cos(t) * 10.0f;

@@ -19,8 +19,8 @@ class Entity
         const game::Mesh* mesh,
         const game::Material* material,
         const game::Vector3& position,
-        const Texture* texture,
-        const Sampler* sampler);
+        const std::vector<const game::Texture*>& textures,
+        const game::Sampler* sampler);
 
     const game::Mesh* Mesh() const
     {
@@ -34,14 +34,14 @@ class Entity
 
     std::span<const float> Model() const;
 
-    const Texture* Texture() const;
+    const std::vector<const game::Texture*>& Textures() const;
     const Sampler* Sampler() const;
 
   private:
     const game::Mesh* m_Mesh;
     const game::Material* m_Material;
     Mat4 m_Model;
-    const game::Texture* m_Texture;
+    std::vector<const game::Texture*> m_Textures;
     const game::Sampler* m_Sampler;
 };
 
