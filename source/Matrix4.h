@@ -9,20 +9,20 @@
 namespace game
 {
 
-class Mat4
+class Matrix4
 {
   public:
-    constexpr Mat4()
+    constexpr Matrix4()
         : m_Elements({1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f})
     {
     }
 
-    constexpr Mat4(const std::array<float, 16u>& elements)
+    constexpr Matrix4(const std::array<float, 16u>& elements)
         : m_Elements(elements)
     {
     }
 
-    constexpr Mat4(const Vector3& translation)
+    constexpr Matrix4(const Vector3& translation)
         : m_Elements(
               {1.0f,
                0.0f,
@@ -43,25 +43,25 @@ class Mat4
     {
     }
 
-    static Mat4 LookAt(const Vector3& eye, const Vector3& look_at, const Vector3& up);
-    static Mat4 Perspective(float fov, float width, float height, float near_plane, float far_plane);
+    static Matrix4 LookAt(const Vector3& eye, const Vector3& look_at, const Vector3& up);
+    static Matrix4 Perspective(float fov, float width, float height, float near_plane, float far_plane);
 
     constexpr std::span<const float> Data() const
     {
         return m_Elements;
     }
 
-    friend constexpr Mat4& operator*=(Mat4& m1, const Mat4& m2);
+    friend constexpr Matrix4& operator*=(Matrix4& m1, const Matrix4& m2);
 
-    constexpr bool operator==(const Mat4&) const = default;
+    constexpr bool operator==(const Matrix4&) const = default;
 
   private:
     std::array<float, 16u> m_Elements;
 };
 
-constexpr Mat4& operator*=(Mat4& m1, const Mat4& m2)
+constexpr Matrix4& operator*=(Matrix4& m1, const Matrix4& m2)
 {
-    Mat4 result = {};
+    Matrix4 result = {};
     for (int i = 0; i < 4; ++i)
     {
         for (int j = 0; j < 4; ++j)
@@ -78,23 +78,23 @@ constexpr Mat4& operator*=(Mat4& m1, const Mat4& m2)
     return m1;
 }
 
-constexpr Mat4 operator*(const Mat4& m1, const Mat4& m2)
+constexpr Matrix4 operator*(const Matrix4& m1, const Matrix4& m2)
 {
-    Mat4 tmp = m1;
+    Matrix4 tmp = m1;
     return tmp *= m2;
 }
 
 }
 
 template <>
-struct std::formatter<game::Mat4>
+struct std::formatter<game::Matrix4>
 {
     constexpr auto parse(std::format_parse_context& ctx)
     {
         return std::begin(ctx);
     }
 
-    auto format(const game::Mat4& obj, std::format_context& ctx) const
+    auto format(const game::Matrix4& obj, std::format_context& ctx) const
     {
         const auto* data = obj.Data().data();
         return std::format_to(

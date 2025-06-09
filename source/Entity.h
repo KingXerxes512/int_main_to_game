@@ -1,16 +1,18 @@
 #pragma once
 
-#include <span>
-
-#include "Material.h"
 #include "Matrix4.h"
-#include "Mesh.h"
-#include "Sampler.h"
-#include "Texture.h"
 #include "Vector3.h"
+
+#include <tuple>
+#include <vector>
 
 namespace game
 {
+
+class Material;
+class Mesh;
+class Texture;
+class Sampler;
 
 class Entity
 {
@@ -19,30 +21,19 @@ class Entity
         const game::Mesh* mesh,
         const game::Material* material,
         const game::Vector3& position,
-        const std::vector<const game::Texture*>& textures,
-        const game::Sampler* sampler);
+        const std::vector<std::tuple<const Texture*, const Sampler*>>& textures);
 
-    const game::Mesh* Mesh() const
-    {
-        return m_Mesh;
-    }
+    const game::Mesh* Mesh() const;
+    const game::Material* Material() const;
+    const Matrix4& Model() const;
 
-    const game::Material* Material() const
-    {
-        return m_Material;
-    }
-
-    std::span<const float> Model() const;
-
-    const std::vector<const game::Texture*>& Textures() const;
-    const Sampler* Sampler() const;
+    std::span<const std::tuple<const game::Texture*, const game::Sampler*>> Textures() const;
 
   private:
     const game::Mesh* m_Mesh;
     const game::Material* m_Material;
-    Mat4 m_Model;
-    std::vector<const game::Texture*> m_Textures;
-    const game::Sampler* m_Sampler;
+    Matrix4 m_Model;
+    std::vector<std::tuple<const game::Texture*, const game::Sampler*>> m_Textures;
 };
 
 }

@@ -3,6 +3,10 @@
 #include "Camera.h"
 #include "Color.h"
 #include "Entity.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Sampler.h"
+#include "Texture.h"
 
 namespace
 {
@@ -25,7 +29,7 @@ namespace game
 {
 
 Renderer::Renderer()
-    : m_CameraBuffer(sizeof(Mat4) * 2u + sizeof(Vector3))
+    : m_CameraBuffer(sizeof(Matrix4) * 2u + sizeof(Vector3))
     , m_LightBuffer(sizeof(LightBuffer))
 {
 }
@@ -61,17 +65,16 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
     {
         const auto* material = entity->Material();
         const auto* mesh = entity->Mesh();
-        const auto* sampler = entity->Sampler();
 
-        ::glUseProgram(material->Native_Handle());
-
-        const GLint model_uniform = ::glGetUniformLocation(material->Native_Handle(), "model");
-        ::glUniformMatrix4fv(model_uniform, 1, GL_FALSE, entity->Model().data());
+        material->Use();
+        material->SetUniform("model", entity->Model());
 
         for (const auto& [index, tex] : entity->Textures() | std::views::enumerate)
         {
+            const auto* texture = std::get<0>(tex);
+            const auto* sampler = std::get<1>(tex);
             const ::GLuint idx = static_cast<::GLuint>(index);
-            ::glBindTextureUnit(idx, tex->Native_Handle());
+            ::glBindTextureUnit(idx, texture->Native_Handle());
             ::glBindSampler(idx, sampler->Native_Handle());
 
             const auto uniformName = std::format("tex{}", index);

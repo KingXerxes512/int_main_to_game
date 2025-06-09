@@ -33,8 +33,8 @@ class Camera
     Vector3 Position() const;
 
   private:
-    Mat4 m_View;
-    Mat4 m_Projection;
+    Matrix4 m_View;
+    Matrix4 m_Projection;
     Vector3 m_Position;
     Vector3 m_Direction;
     Vector3 m_Up;

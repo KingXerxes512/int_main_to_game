@@ -1,6 +1,9 @@
-#include "Entity.h"
-
 #include <vector>
+
+#include "Entity.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Sampler.h"
 
 namespace game
 {
@@ -9,29 +12,32 @@ Entity::Entity(
     const game::Mesh* mesh,
     const game::Material* material,
     const game::Vector3& position,
-    const std::vector<const game::Texture*>& textures,
-    const game::Sampler* sampler)
+    const std::vector<std::tuple<const game::Texture*, const game::Sampler*>>& textures)
     : m_Mesh(mesh)
     , m_Material(material)
-    , m_Model(Mat4(position))
+    , m_Model(Matrix4(position))
     , m_Textures(textures)
-    , m_Sampler(sampler)
 {
 }
 
-std::span<const float> Entity::Model() const
+const game::Mesh* Entity::Mesh() const
 {
-    return m_Model.Data();
+    return m_Mesh;
 }
 
-const std::vector<const game::Texture*>& Entity::Textures() const
+const game::Material* Entity::Material() const
+{
+    return m_Material;
+}
+
+const game::Matrix4& Entity::Model() const
+{
+    return m_Model;
+}
+
+std::span<const std::tuple<const game::Texture*, const game::Sampler*>> Entity::Textures() const
 {
     return m_Textures;
-}
-
-const game::Sampler* Entity::Sampler() const
-{
-    return m_Sampler;
 }
 
 }

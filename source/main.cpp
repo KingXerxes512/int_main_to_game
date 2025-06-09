@@ -40,6 +40,10 @@ int main(int argc, char** argv)
         game::Texture specMap{loader.Load_Binary("container2_specular.png"), 500, 500};
         game::Sampler sampler{};
 
+        const game::Texture* textures[]{&texture, &specMap};
+        const game::Sampler* samplers[]{&sampler, &sampler};
+        const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
+
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
@@ -47,8 +51,6 @@ int main(int argc, char** argv)
         auto renderer = game::Renderer();
 
         auto entities = std::vector<game::Entity>{};
-
-        std::vector<const game::Texture*> texPtrs = {&texture, &specMap};
 
         for (auto i = -10; i < 10; ++i)
         {
@@ -58,8 +60,7 @@ int main(int argc, char** argv)
                     &mesh,
                     &material,
                     game::Vector3{static_cast<float>(i) * 3.5f, 0.0f, static_cast<float>(j) * 3.5f},
-                    texPtrs,
-                    &sampler);
+                    texSam);
             }
         }
 
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
             scene.point.position.x = std::sin(t) * 10.0f;
             scene.point.position.z = std::cos(t) * 10.0f;
 
-                renderer.Render(camera, scene);
+            renderer.Render(camera, scene);
             window.Swap();
 
             auto end = std::chrono::system_clock::now();
