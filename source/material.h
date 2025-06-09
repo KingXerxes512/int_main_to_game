@@ -6,8 +6,8 @@
 #include "Shader.h"
 #include "StringMap.h"
 
-#include <string_view>
 #include <cstdint>
+#include <string_view>
 
 namespace game
 {
