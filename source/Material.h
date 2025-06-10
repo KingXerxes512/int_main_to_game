@@ -21,6 +21,7 @@ class Material
 
     void Use() const;
     void SetUniform(std::string_view name, const Matrix4& obj) const;
+    void SetUniform(std::string_view name, int obj) const;
     void BindTexture(std::uint32_t index, const Texture* texture, const Sampler* sampler) const;
 
     ::GLuint Native_Handle() const;

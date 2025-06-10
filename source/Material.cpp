@@ -3,6 +3,8 @@
 #include "Log.h"
 #include "Opengl.h"
 
+#include <tuple>
+
 namespace game
 {
 
@@ -13,7 +15,7 @@ Material::Material(const Shader& vertex_shader, const Shader& fragment_shader)
     ensure(vertex_shader.Type() == ShaderType::VERTEX, "vertex_shader is not a vertex shader!");
     ensure(fragment_shader.Type() == ShaderType::FRAGMENT, "fragment_shader is not a fragment shader!");
 
-    m_Handle = game::AutoRelease<::GLuint>(::glCreateProgram(), ::glDeleteProgram);
+    m_Handle = AutoRelease<::GLuint>(::glCreateProgram(), ::glDeleteProgram);
     ensure(m_Handle, "Failed to create opengl program!");
 
     ::glAttachShader(m_Handle, vertex_shader.Native_Handle());
@@ -68,16 +70,28 @@ void Material::Use() const
 void Material::SetUniform(std::string_view name, const Matrix4& obj) const
 {
     const auto uniform = m_Uniforms.find(name);
-    ensure(uniform != std::ranges::cend(m_Uniforms), "Missin uniform {}", name);
+    ensure(uniform != std::ranges::cend(m_Uniforms), "Missing uniform {}", name);
 
     ::glUniformMatrix4fv(uniform->second, 1, GL_FALSE, obj.Data().data());
 }
 
+void Material::SetUniform(std::string_view name, int obj) const
+{
+    const auto uniform = m_Uniforms.find(name);
+    ensure(uniform != std::ranges::cend(m_Uniforms), "Missing uniform {}", name);
+
+    ::glUniform1i(uniform->second, static_cast<::GLint>(obj));
+}
+
 void Material::BindTexture(std::uint32_t index, const Texture* texture, const Sampler* sampler) const
 {
-    USE(&index);
-    USE(texture);
-    USE(sampler);
+    const ::GLuint idx = static_cast<::GLuint>(index);
+    ::glBindTextureUnit(idx, texture->Native_Handle());
+    ::glBindSampler(idx, sampler->Native_Handle());
+
+    const auto uniformName = std::format("tex{}", index);
+
+    SetUniform(uniformName, index);
 }
 
 ::GLuint Material::Native_Handle() const

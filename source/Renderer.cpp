@@ -73,14 +73,8 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
         {
             const auto* texture = std::get<0>(tex);
             const auto* sampler = std::get<1>(tex);
-            const ::GLuint idx = static_cast<::GLuint>(index);
-            ::glBindTextureUnit(idx, texture->Native_Handle());
-            ::glBindSampler(idx, sampler->Native_Handle());
 
-            const auto uniformName = std::format("tex{}", index);
-
-            const GLint texUniform = ::glGetUniformLocation(material->Native_Handle(), uniformName.c_str());
-            ::glUniform1i(texUniform, static_cast<::GLint>(index));
+            material->BindTexture(static_cast<std::uint32_t>(index), texture, sampler);
         }
 
         mesh->Bind();
