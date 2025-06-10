@@ -5,6 +5,8 @@
 #include <print>
 #include <source_location>
 
+#define USE(x) ((void*)x)
+
 namespace game::log
 {
 

@@ -75,6 +75,9 @@ void Material::SetUniform(std::string_view name, const Matrix4& obj) const
 
 void Material::BindTexture(std::uint32_t index, const Texture* texture, const Sampler* sampler) const
 {
+    USE(&index);
+    USE(texture);
+    USE(sampler);
 }
 
 ::GLuint Material::Native_Handle() const

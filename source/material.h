@@ -4,6 +4,8 @@
 #include "Matrix4.h"
 #include "Opengl.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "Sampler.h"
 #include "StringMap.h"
 
 #include <cstdint>

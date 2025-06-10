@@ -24,7 +24,6 @@
     DO(::PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer)                                                          \
     DO(::PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray)                                                  \
     DO(::PFNGLUSEPROGRAMPROC, glUseProgram)                                                                            \
-    DO(::PFNGLDRAWARRAYSEXTPROC, glDrawArraysEXT)                                                                      \
     DO(::PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays)                                                            \
     DO(::PFNGLDELETEBUFFERSPROC, glDeleteBuffers)                                                                      \
     DO(::PFNGLDEBUGMESSAGECALLBACKPROC, glDebugMessageCallback)                                                        \
