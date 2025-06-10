@@ -94,6 +94,15 @@ void Material::BindTexture(std::uint32_t index, const Texture* texture, const Sa
     SetUniform(uniformName, index);
 }
 
+void Material::BindTextures(std::span<const std::tuple<const Texture*, const Sampler*>> textures) const
+{
+    for (const auto& [index, textureAndSampler] : textures | std::views::enumerate)
+    {
+        const auto& [texture, sampler] = textureAndSampler;
+        BindTexture(static_cast<std::uint32_t>(index), texture, sampler);
+    }
+}
+
 ::GLuint Material::Native_Handle() const
 {
     return m_Handle;

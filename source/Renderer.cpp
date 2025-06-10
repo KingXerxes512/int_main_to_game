@@ -68,14 +68,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
 
         material->Use();
         material->SetUniform("model", entity->Model());
-
-        for (const auto& [index, tex] : entity->Textures() | std::views::enumerate)
-        {
-            const auto* texture = std::get<0>(tex);
-            const auto* sampler = std::get<1>(tex);
-
-            material->BindTexture(static_cast<std::uint32_t>(index), texture, sampler);
-        }
+        material->BindTextures(entity->Textures());
 
         mesh->Bind();
 
