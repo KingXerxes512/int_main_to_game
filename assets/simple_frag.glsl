@@ -45,7 +45,7 @@ vec3 calcPoint()
     float spec = pow(max(dot(normalize(eye - fragCoord.xyz), reflectDir), 0.0), 32) * (50.0 * texture(tex1, texCoord).r);
 
     float intensity = length(point - fragCoord.xyz);
-    return ((diff + spec) / intensity) * direction_color;
+    return ((diff + spec) / intensity) * point_color;
 }
 
 void main()
