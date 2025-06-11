@@ -1,15 +1,17 @@
 #include <print>
 #include <queue>
 
+#include "Error.h"
 #include "Exception.h"
 #include "Key.h"
 #include "KeyEvent.h"
 #include "Log.h"
+#include "MouseButtonEvent.h"
+#include "Opengl.h"
 #include "StopEvent.h"
-#include "error.h"
-#include "opengl.h"
-#include "window.h"
+#include "Window.h"
 
+#include <Windowsx.h>
 #include <hidusage.h>
 
 namespace
@@ -113,6 +115,24 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
                 g_EventQueue.emplace(game::MouseEvent(static_cast<float>(x), static_cast<float>(y)));
             }
 
+            break;
+        }
+        case WM_LBUTTONUP:
+        {
+            game::log::debug("Left button up");
+            g_EventQueue.emplace(game::MouseButtonEvent(
+                static_cast<float>(GET_X_LPARAM(lParam)),
+                static_cast<float>(GET_Y_LPARAM(lParam)),
+                game::MouseButtonState::UP));
+            break;
+        }
+        case WM_LBUTTONDOWN:
+        {
+            game::log::debug("Left button down");
+            g_EventQueue.emplace(game::MouseButtonEvent(
+                static_cast<float>(GET_X_LPARAM(lParam)),
+                static_cast<float>(GET_Y_LPARAM(lParam)),
+                game::MouseButtonState::DOWN));
             break;
         }
     }

@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "DebugUI.h"
 #include "Entity.h"
 #include "Error.h"
 #include "Exception.h"
@@ -85,6 +86,8 @@ int main(int argc, char** argv)
         std::unordered_map<game::Key, bool> key_state{
             {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
 
+        game::DebugUI debugUI{window.Native_Handle(), scene};
+
         auto running = true;
 
         const auto processEvents = [&](auto&& arg)
@@ -111,6 +114,10 @@ int main(int argc, char** argv)
                 const float deltaY = arg.DeltaY() * sensitivity;
                 camera.AdjustYaw(deltaX);
                 camera.AdjustPitch(-deltaY);
+            }
+            else if constexpr (std::same_as<T, game::MouseButtonEvent>)
+            {
+                debugUI.AddMouseEvent(arg);
             }
         };
 
@@ -166,6 +173,7 @@ int main(int argc, char** argv)
             scene.point.position.z = std::cos(t) * 10.0f;
 
             renderer.Render(camera, scene);
+            debugUI.Render();
             window.Swap();
 
             auto end = std::chrono::system_clock::now();

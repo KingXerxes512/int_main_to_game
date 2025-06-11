@@ -26,6 +26,11 @@ class Window
     std::optional<Event> PumpEvent() const;
     void Swap() const;
 
+    HWND Native_Handle() const
+    {
+        return m_Window;
+    }
+
   private:
     AutoRelease<::HWND, nullptr> m_Window;
     AutoRelease<::HDC> m_DC;
