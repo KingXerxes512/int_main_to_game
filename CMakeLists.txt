@@ -29,6 +29,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb_lib)
 
+FetchContent_Declare(
+	imgui
+	GIT_REPOSITORY https://github.com/ocornut/imgui.git
+	GIT_TAG v1.91.6
+)
+FetchContent_MakeAvailable(imgui)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(source)
