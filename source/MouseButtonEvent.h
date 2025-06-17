@@ -14,25 +14,10 @@ enum class MouseButtonState
 class MouseButtonEvent
 {
   public:
-    MouseButtonEvent(float x, float y, MouseButtonState state)
-        : m_X(x)
-        , m_Y(y)
-        , m_State(state)
-    {
-    }
-
-    float X() const
-    {
-        return m_X;
-    }
-    float Y() const
-    {
-        return m_Y;
-    }
-    MouseButtonState State() const
-    {
-        return m_State;
-    }
+    MouseButtonEvent(float x, float y, MouseButtonState state);
+    float X() const;
+    float Y() const;
+    MouseButtonState State() const;
 
   private:
     float m_X;
@@ -42,16 +27,22 @@ class MouseButtonEvent
 
 }
 
-// template <>
-// struct std::formatter<game::MouseButtonEvent>
-//{
-//     constexpr auto parse(std::format_parse_context& ctx)
-//     {
-//         return std::begin(ctx);
-//     }
-//
-//     auto format(const game::MouseButtonEvent& obj, std::format_context& ctx) const
-//     {
-//         return std::format_to(ctx.out(), "MouseEvent {} {}", obj.DeltaX(), obj.DeltaY());
-//     }
-// };
+template <>
+struct std::formatter<game::MouseButtonEvent>
+{
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return std::begin(ctx);
+    }
+
+    auto format(const game::MouseButtonEvent& obj, std::format_context& ctx) const
+    {
+        switch (obj.State())
+        {
+            using enum game::MouseButtonState;
+            case UP: return std::format_to(ctx.out(), "UP");
+            case DOWN: return std::format_to(ctx.out(), "DOWN");
+            default: return std::format_to(ctx.out(), "UNKNOWN");
+        }
+    }
+};

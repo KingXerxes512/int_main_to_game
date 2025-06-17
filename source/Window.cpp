@@ -37,7 +37,7 @@ void APIENTRY OpenGLDebugCallback(
         case GL_DEBUG_SEVERITY_LOW: sev = "GL_DEBUG_SEVERITY_LOW"; break;
         case GL_DEBUG_SEVERITY_MEDIUM: sev = "GL_DEBUG_SEVERITY_MEDIUM"; break;
         case GL_DEBUG_SEVERITY_HIGH: sev = "GL_DEBUG_SEVERITY_HIGH"; break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: sev = "GL_DEBUG_SEVERITY_NOTIFICATION"; break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: sev = "GL_DEBUG_SEVERITY_NOTIFICATION"; return;
     }
 
     std::string ty = "?";
