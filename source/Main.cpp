@@ -86,6 +86,7 @@ int main(int argc, char** argv)
         std::unordered_map<game::Key, bool> key_state{
             {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
 
+        bool showDebug = true;
         game::DebugUI debugUI{window.Native_Handle(), scene};
 
         auto running = true;
@@ -106,9 +107,17 @@ int main(int argc, char** argv)
                 }
 
                 key_state[arg.Key()] = arg.State() == game::KeyState::DOWN;
+
+                if (arg.Key() == game::Key::F1 && arg.State() == game::KeyState::UP)
+                {
+                    showDebug = !showDebug;
+                }
             }
             else if constexpr (std::same_as<T, game::MouseEvent>)
             {
+                if (showDebug)
+                    return;
+
                 static constexpr float sensitivity = 0.001f;
                 const float deltaX = arg.DeltaX() * sensitivity;
                 const float deltaY = arg.DeltaY() * sensitivity;
@@ -173,7 +182,10 @@ int main(int argc, char** argv)
             scene.point.position.z = std::cos(t) * 10.0f;
 
             renderer.Render(camera, scene);
-            debugUI.Render();
+
+            if (showDebug)
+                debugUI.Render();
+
             window.Swap();
 
             auto end = std::chrono::system_clock::now();
