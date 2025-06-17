@@ -274,6 +274,8 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     : m_Window({})
     , m_DC({})
     , m_WC({})
+    , m_Width(width)
+    , m_Height(height)
 {
     m_WC = {
         .style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC,
@@ -287,8 +289,8 @@ Window::Window(std::uint32_t width, std::uint32_t height)
     RECT rect{
         .left = {},
         .top = {},
-        .right = static_cast<long>(width),
-        .bottom = static_cast<long>(height),
+        .right = static_cast<long>(m_Width),
+        .bottom = static_cast<long>(m_Height),
     };
 
     ensure(::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false) != 0, "Failed to resize window!");

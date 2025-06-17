@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     {
         game::ensure(argc == 2, "Usage: ./game.exe <root_path>");
 
-        game::Window window(800u, 600u);
+        game::Window window(1920, 1080);
 
         game::ResourceLoader loader{argv[1]};
         const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
@@ -45,10 +45,10 @@ int main(int argc, char** argv)
         const game::Sampler* samplers[]{&sampler, &sampler};
         const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
 
+        const auto mesh = game::Mesh();
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
-        const auto mesh = game::Mesh();
         auto renderer = game::Renderer();
 
         auto entities = std::vector<game::Entity>{};
@@ -78,8 +78,8 @@ int main(int argc, char** argv)
             {0.0f, 0.0f, 0.0f},
             {0.0f, 1.0f, 0.0f},
             std::numbers::pi_v<float> / 4.0f,
-            800.0f,
-            600.0f,
+            static_cast<float>(window.Width()),
+            static_cast<float>(window.Height()),
             0.001f,
             100.0f);
 

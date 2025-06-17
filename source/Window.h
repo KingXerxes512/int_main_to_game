@@ -31,10 +31,22 @@ class Window
         return m_Window;
     }
 
+    uint32_t Width() const
+    {
+        return m_Width;
+    }
+    
+    uint32_t Height() const
+    {
+        return m_Height;
+    }
+
   private:
     AutoRelease<::HWND, nullptr> m_Window;
     AutoRelease<::HDC> m_DC;
     WNDCLASSA m_WC;
+    uint32_t m_Width;
+    uint32_t m_Height;
 };
 
 }
