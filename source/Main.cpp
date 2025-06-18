@@ -45,8 +45,6 @@ int main(int argc, char** argv)
 
         game::Window window(1920, 1080);
 
-        wglSwapIntervalEXT(0);
-
         game::ResourceLoader loader{argv[1]};
         const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
         const auto fragment_shader_src = loader.Load_String("simple_frag.glsl");
@@ -106,7 +104,7 @@ int main(int argc, char** argv)
             {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
 
         bool showDebug = true;
-        game::DebugUI debugUI{window.Native_Handle(), scene};
+        game::DebugUI debugUI{window.Native_Handle(), scene, camera};
 
         auto running = true;
 
@@ -193,12 +191,6 @@ int main(int argc, char** argv)
 
             const auto speed = 0.01f;
             camera.Translate(game::Vector3::Normalize(walkDirection * speed));
-
-            static auto t = 0.0f;
-            t += 0.01f;
-
-            scene.point.position.x = std::sin(t) * 10.0f;
-            scene.point.position.z = std::cos(t) * 10.0f;
 
             auto renderStart = std::chrono::system_clock::now();
             renderer.Render(camera, scene);

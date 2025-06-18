@@ -9,9 +9,9 @@ file(GLOB opengl_headers
 )
 
 # Imgui
-add_library(imguilib STATIC ${imgui_headers} ${imgui_sources})
-target_compile_options(imguilib PUBLIC /W4 /WX /Zi /MP)
-target_include_directories(imguilib PUBLIC ${imgui_SOURCE_DIR})
+add_library(imguilib STATIC ${imgui_headers} ${imgui_sources} ${imguizmo_SOURCE_DIR}/ImGuizmo.cpp)
+target_compile_options(imguilib PUBLIC /Zi /MP)
+target_include_directories(imguilib PUBLIC ${imgui_SOURCE_DIR} ${imguizmo_SOURCE_DIR})
 
 # Game
 add_executable(Game ${Sources} ${Headers} ${opengl_headers} ${Shaders})
@@ -29,7 +29,7 @@ source_group(Headers FILES ${Headers})
 source_group(Headers/OpenGL FILES ${opengl_headers})
 source_group(Shaders FILES ${Shaders})
 source_group(Sources FILES ${Sources})
-source_group(Headers/imgui FILES ${imgui_headers})
-source_group(Sources/imgui FILES ${imgui_sources})
+source_group(Headers FILES ${imgui_headers})
+source_group(Sources FILES ${imgui_sources} ${imguizmo_SOURCE_DIR}/ImGuizmo.cpp)
 
 file(COPY_FILE ../Game.vcxproj.user  ../build/source/Game.vcxproj.user)

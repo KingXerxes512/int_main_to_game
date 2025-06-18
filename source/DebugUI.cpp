@@ -1,15 +1,21 @@
 #include "DebugUI.h"
 
 #include "Log.h"
+#include "Matrix4.h"
+
+#include "imgui.h"
+
+#include "ImGuizmo.h"
+
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_win32.h"
-#include "imgui.h"
 
 namespace game
 {
 
-DebugUI::DebugUI(HWND window, Scene& scene)
+DebugUI::DebugUI(HWND window, Scene& scene, Camera& camera)
     : m_Scene(scene)
+    , m_Camera(camera)
 {
     IMGUI_CHECKVERSION();
     ::ImGui::CreateContext();
@@ -38,6 +44,24 @@ void DebugUI::Render() const
     ::ImGui_ImplOpenGL3_NewFrame();
     ::ImGui_ImplWin32_NewFrame();
     ::ImGui::NewFrame();
+
+    ::ImGuizmo::SetOrthographic(false);
+    ::ImGuizmo::BeginFrame();
+    ::ImGuizmo::Enable(true);
+    ::ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+    Matrix4 translate = m_Scene.point.position;
+
+    ::ImGuizmo::Manipulate(
+        m_Camera.View().data(),
+        m_Camera.Projection().data(),
+        ::ImGuizmo::TRANSLATE,
+        ::ImGuizmo::WORLD,
+        const_cast<float*>(translate.Data().data()));
+
+    m_Scene.point.position.x = translate.Data()[12];
+    m_Scene.point.position.y = translate.Data()[13];
+    m_Scene.point.position.z = translate.Data()[14];
 
     ::ImGui::LabelText("", "FPS: %f", io.Framerate);
 
