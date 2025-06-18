@@ -25,6 +25,18 @@
 #include <stacktrace>
 #include <unordered_map>
 
+template <class T, class U>
+void busySleep(std::chrono::duration<T, U> duration)
+{
+    auto end = std::chrono::system_clock::now() + duration;
+    while (true)
+    {
+        auto now = std::chrono::system_clock::now();
+        if (now > end)
+            return;
+    }
+}
+
 int main(int argc, char** argv)
 {
     try
@@ -32,6 +44,8 @@ int main(int argc, char** argv)
         game::ensure(argc == 2, "Usage: ./game.exe <root_path>");
 
         game::Window window(1920, 1080);
+
+        wglSwapIntervalEXT(0);
 
         game::ResourceLoader loader{argv[1]};
         const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
@@ -70,7 +84,12 @@ int main(int argc, char** argv)
                 entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>(),
             .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f},                                                    //
             .directional = {.direction = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}, //
-            .point = {.position = {5.0f, 5.0f, 0.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}            //
+            .point =
+                {.position = {5.0f, 5.0f, 0.0f},
+                 .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f},
+                 .const_attenuation = 1.0f,
+                 .linear_attenuation = 0.07f,
+                 .quad_attenuation = 0.017f} //
         };
 
         auto camera = game::Camera(
@@ -131,12 +150,12 @@ int main(int argc, char** argv)
         };
 
         using namespace std::literals::chrono_literals;
-        constexpr auto targetTime = 8.333ms;
-        auto startTime = std::chrono::system_clock::now();
+        constexpr double targetFPS = 60.0;
+        constexpr std::chrono::duration<double, std::milli> targetTime(1000.0 / targetFPS);
+        game::log::debug("Target FPS: {}, frametime: ({:.3f}ms)", targetFPS, targetTime.count());
 
         while (running)
         {
-            startTime = std::chrono::system_clock::now();
             auto event = window.PumpEvent();
             while (event && running)
             {
@@ -181,16 +200,17 @@ int main(int argc, char** argv)
             scene.point.position.x = std::sin(t) * 10.0f;
             scene.point.position.z = std::cos(t) * 10.0f;
 
+            auto renderStart = std::chrono::system_clock::now();
             renderer.Render(camera, scene);
 
             if (showDebug)
                 debugUI.Render();
 
             window.Swap();
+            auto renderEnd = std::chrono::system_clock::now();
 
-            auto end = std::chrono::system_clock::now();
-            auto diff = targetTime - (end - startTime);
-            std::this_thread::sleep_for(diff);
+            auto diff = targetTime - (renderEnd - renderStart);
+            busySleep(diff);
         }
     }
     catch (const game::Exception& err)

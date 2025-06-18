@@ -20,6 +20,7 @@ struct LightBuffer
     alignas(16) game::Color direction_color;
     alignas(16) game::Vector3 point;
     alignas(16) game::Color point_color;
+    alignas(16) game::Vector3 attenuation;
 };
 #pragma warning(pop)
 
@@ -53,7 +54,10 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
             .direction = scene.directional.direction,
             .direction_color = scene.directional.color,
             .point = scene.point.position,
-            .point_color = scene.point.color};
+            .point_color = scene.point.color,
+            .attenuation =
+                {scene.point.const_attenuation, scene.point.linear_attenuation, scene.point.quad_attenuation} //
+        };
 
         BufferWriter writer{m_LightBuffer};
         writer.Write(light_buffer);

@@ -19,8 +19,10 @@ struct DirectionalLight
 struct PointLight
 {
     Vector3 position;
-    // Vector3 direction;
     Color color;
+    float const_attenuation;
+    float linear_attenuation;
+    float quad_attenuation;
 };
 
 struct Scene
