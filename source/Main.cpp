@@ -82,12 +82,12 @@ int main(int argc, char** argv)
                 entities | std::views::transform([](const auto& e) { return &e; }) | std::ranges::to<std::vector>(),
             .ambient = {.r = 0.3f, .g = 0.3f, .b = 0.3f},                                                    //
             .directional = {.direction = {-1.0f, -1.0f, -1.0f}, .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f}}, //
-            .point =
-                {.position = {5.0f, 5.0f, 0.0f},
-                 .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f},
-                 .const_attenuation = 1.0f,
-                 .linear_attenuation = 0.07f,
-                 .quad_attenuation = 0.017f} //
+            .points =
+                {{.position = {5.0f, 5.0f, 0.0f},
+                  .color = {.r = 0.5f, .g = 0.5f, .b = 0.5f},
+                  .const_attenuation = 1.0f,
+                  .linear_attenuation = 0.07f,
+                  .quad_attenuation = 0.017f}} //
         };
 
         auto camera = game::Camera(

@@ -39,13 +39,13 @@ DebugUI::~DebugUI()
 
 void DebugUI::Render() const
 {
-    auto& io = ::ImGui::GetIO();
+    //auto& io = ::ImGui::GetIO();
 
     ::ImGui_ImplOpenGL3_NewFrame();
     ::ImGui_ImplWin32_NewFrame();
     ::ImGui::NewFrame();
 
-    ::ImGuizmo::SetOrthographic(false);
+    /*::ImGuizmo::SetOrthographic(false);
     ::ImGuizmo::BeginFrame();
     ::ImGuizmo::Enable(true);
     ::ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -75,7 +75,7 @@ void DebugUI::Render() const
 
     ::ImGui::SliderFloat("constant", &m_Scene.point.const_attenuation, 0.0f, 1.0f);
     ::ImGui::SliderFloat("linear", &m_Scene.point.linear_attenuation, 0.0f, 1.0f);
-    ::ImGui::SliderFloat("quad", &m_Scene.point.quad_attenuation, 0.0f, 0.2f);
+    ::ImGui::SliderFloat("quad", &m_Scene.point.quad_attenuation, 0.0f, 0.2f);*/
 
     ::ImGui::Render();
     ::ImGui_ImplOpenGL3_RenderDrawData(::ImGui::GetDrawData());

@@ -15,14 +15,20 @@ layout(std140, binding = 0) uniform camera
     vec3 eye;
 };
 
-layout(std140, binding = 1) uniform lights
+struct PointLight
+{
+    vec3 point;
+    vec3 pointColor;
+    vec3 attenuation;
+};
+
+layout(std430, binding = 1) readonly buffer lights
 {
     vec3 ambient;
     vec3 direction;
     vec3 direction_color;
-    vec3 point;
-    vec3 point_color;
-    vec3 attenuation;
+    int numPoints;
+    PointLight points[];
 };
 
 vec3 calcAmbient()
@@ -37,8 +43,12 @@ vec3 calcDirection()
     return diff * direction_color;
 }
 
-vec3 calcPoint()
+vec3 calcPoint(int index)
 {
+    vec3 attenuation = points[index].attenuation;
+    vec3 point = points[index].point;
+    vec3 pointColor = points[index].pointColor;
+
     float distance = length(point - fragCoord.xyz);
     float atten = 1.0 / (attenuation.x + (attenuation.y * distance) + (attenuation.z * (distance * distance)));
 
@@ -48,15 +58,19 @@ vec3 calcPoint()
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(normalize(eye - fragCoord.xyz), reflectDir), 0.0), 32) * texture(tex1, texCoord).r;
 
-    return ((diff + spec) * atten) * point_color;
+    return ((diff + spec) * atten) * pointColor;
 }
 
 void main()
 {
     vec4 sourceColor = texture(tex0, texCoord);
-    vec3 amb_color = calcAmbient();
-    vec3 dir_color = calcDirection();
-    vec3 point_color = calcPoint();
+    vec3 color = calcAmbient();
+    color += calcDirection();
 
-    frag_color = vec4((amb_color + dir_color + point_color) * sourceColor.rgb, 1.0);
+    for (int i = 0; i < numPoints; ++i)
+    {
+        color += calcPoint(i);        
+    }
+
+    frag_color = vec4(color * sourceColor.rgb, 1.0);
 }

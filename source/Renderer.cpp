@@ -13,14 +13,19 @@ namespace
 
 #pragma warning(push)
 #pragma warning(disable : 4324)
+struct PointLightBuffer
+{
+    alignas(16) game::Vector3 position;
+    alignas(16) game::Color color;
+    alignas(16) game::Vector3 attenuation;
+};
+
 struct LightBuffer
 {
     alignas(16) game::Color ambient;
     alignas(16) game::Vector3 direction;
     alignas(16) game::Color direction_color;
-    alignas(16) game::Vector3 point;
-    alignas(16) game::Color point_color;
-    alignas(16) game::Vector3 attenuation;
+    int numLights;
 };
 #pragma warning(pop)
 
@@ -31,7 +36,7 @@ namespace game
 
 Renderer::Renderer()
     : m_CameraBuffer(sizeof(Matrix4) * 2u + sizeof(Vector3))
-    , m_LightBuffer(sizeof(LightBuffer))
+    , m_LightBuffer(10240u)
 {
 }
 
@@ -53,17 +58,23 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
             .ambient = scene.ambient,
             .direction = scene.directional.direction,
             .direction_color = scene.directional.color,
-            .point = scene.point.position,
-            .point_color = scene.point.color,
-            .attenuation =
-                {scene.point.const_attenuation, scene.point.linear_attenuation, scene.point.quad_attenuation} //
-        };
+            .numLights = static_cast<int>(scene.points.size())};
 
         BufferWriter writer{m_LightBuffer};
         writer.Write(light_buffer);
+
+        for (const auto& point : scene.points)
+        {
+            PointLightBuffer pointLightBuffer = {
+                .position = point.position,
+                .color = point.color,
+                .attenuation = {point.const_attenuation, point.linear_attenuation, point.quad_attenuation}};
+
+            writer.Write(pointLightBuffer);
+        }
     }
 
-    ::glBindBufferBase(GL_UNIFORM_BUFFER, 1, m_LightBuffer.Native_Handle());
+    ::glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_LightBuffer.Native_Handle());
 
     for (const auto* entity : scene.entities)
     {
@@ -81,5 +92,4 @@ void Renderer::Render(const Camera& camera, const Scene& scene) const
         mesh->Unbind();
     }
 }
-
 }
