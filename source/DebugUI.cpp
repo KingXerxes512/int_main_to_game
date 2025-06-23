@@ -10,6 +10,9 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_win32.h"
 
+#include <format>
+#include <ranges>
+
 namespace game
 {
 
@@ -39,7 +42,7 @@ DebugUI::~DebugUI()
 
 void DebugUI::Render() const
 {
-    //auto& io = ::ImGui::GetIO();
+    auto& io = ::ImGui::GetIO();
 
     ::ImGui_ImplOpenGL3_NewFrame();
     ::ImGui_ImplWin32_NewFrame();
@@ -61,21 +64,30 @@ void DebugUI::Render() const
 
     m_Scene.point.position.x = translate.Data()[12];
     m_Scene.point.position.y = translate.Data()[13];
-    m_Scene.point.position.z = translate.Data()[14];
+    m_Scene.point.position.z = translate.Data()[14];*/
 
     ::ImGui::LabelText("", "FPS: %f", io.Framerate);
 
-    static float color[3] = {m_Scene.point.color.r, m_Scene.point.color.g, m_Scene.point.color.b};
-    if (::ImGui::ColorPicker3("", color))
+    for (const auto& [index, point] : m_Scene.points | std::views::enumerate)
     {
-        m_Scene.point.color.r = color[0];
-        m_Scene.point.color.g = color[1];
-        m_Scene.point.color.b = color[2];
-    }
+        float color[3] = {point.color.r, point.color.g, point.color.b};
 
-    ::ImGui::SliderFloat("constant", &m_Scene.point.const_attenuation, 0.0f, 1.0f);
-    ::ImGui::SliderFloat("linear", &m_Scene.point.linear_attenuation, 0.0f, 1.0f);
-    ::ImGui::SliderFloat("quad", &m_Scene.point.quad_attenuation, 0.0f, 0.2f);*/
+        const auto name = std::format("color: {}", index);
+        const auto constName = std::format("constant: {}", index);
+        const auto linearName = std::format("linear: {}", index);
+        const auto quadName = std::format("quadratic: {}", index);
+
+        if (::ImGui::ColorPicker3(name.c_str(), color))
+        {
+            point.color.r = color[0];
+            point.color.g = color[1];
+            point.color.b = color[2];
+        }
+
+        ::ImGui::SliderFloat(constName.c_str(), &point.const_attenuation, 0.0f, 1.0f);
+        ::ImGui::SliderFloat(linearName.c_str(), &point.linear_attenuation, 0.0f, 1.0f);
+        ::ImGui::SliderFloat(quadName.c_str(), &point.quad_attenuation, 0.0f, 0.2f);
+    }
 
     ::ImGui::Render();
     ::ImGui_ImplOpenGL3_RenderDrawData(::ImGui::GetDrawData());
