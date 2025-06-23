@@ -21,6 +21,7 @@
 #include <iostream>
 #include <numbers>
 #include <print>
+#include <random>
 #include <ranges>
 #include <stacktrace>
 #include <unordered_map>
@@ -65,6 +66,10 @@ int main(int argc, char** argv)
 
         auto entities = std::vector<game::Entity>{};
 
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+        std::uniform_real_distribution dist(-5.0f, 5.0f);
+        
         for (auto i = -10; i < 10; ++i)
         {
             for (auto j = -10; j < 10; ++j)
@@ -72,7 +77,7 @@ int main(int argc, char** argv)
                 entities.emplace_back(
                     &mesh,
                     &material,
-                    game::Vector3{static_cast<float>(i) * 3.5f, 0.0f, static_cast<float>(j) * 3.5f},
+                    game::Vector3{static_cast<float>(i) * 3.5f, dist(gen), static_cast<float>(j) * 3.5f},
                     texSam);
             }
         }

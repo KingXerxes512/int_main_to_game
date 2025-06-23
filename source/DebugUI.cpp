@@ -58,6 +58,30 @@ void DebugUI::Render() const
 
     ::ImGui::LabelText("", "FPS: %f", io.Framerate);
 
+    if (::ImGui::CollapsingHeader("Ambient"))
+    {
+        auto& ambient = m_Scene.ambient;
+        float color[] = {ambient.r, ambient.g, ambient.b};
+        if (::ImGui::ColorPicker3("Ambient", color))
+        {
+            ambient.r = color[0];
+            ambient.g = color[1];
+            ambient.b = color[2];
+        }
+    }
+
+    if (::ImGui::CollapsingHeader("Directional"))
+    {
+        auto& directional = m_Scene.directional;
+        float color[] = {directional.color.r, directional.color.g, directional.color.b};
+        if (::ImGui::ColorPicker3("Directional", color))
+        {
+            directional.color.r = color[0];
+            directional.color.g = color[1];
+            directional.color.b = color[2];
+        }
+    }
+
     for (const auto& [index, point] : m_Scene.points | std::views::enumerate)
     {
         float color[3] = {point.color.r, point.color.g, point.color.b};
@@ -67,17 +91,21 @@ void DebugUI::Render() const
         const auto linearName = std::format("linear: {}", index);
         const auto quadName = std::format("quadratic: {}", index);
 
-        if (::ImGui::ColorPicker3(name.c_str(), color))
+        if (::ImGui::CollapsingHeader(name.c_str()))
         {
-            point.color.r = color[0];
-            point.color.g = color[1];
-            point.color.b = color[2];
-            selectedPointLight = index;
-        }
 
-        ::ImGui::SliderFloat(constName.c_str(), &point.const_attenuation, 0.0f, 1.0f);
-        ::ImGui::SliderFloat(linearName.c_str(), &point.linear_attenuation, 0.0f, 0.2f);
-        ::ImGui::SliderFloat(quadName.c_str(), &point.quad_attenuation, 0.0f, 0.1f);
+            if (::ImGui::ColorPicker3(name.c_str(), color))
+            {
+                point.color.r = color[0];
+                point.color.g = color[1];
+                point.color.b = color[2];
+                selectedPointLight = index;
+            }
+
+            ::ImGui::SliderFloat(constName.c_str(), &point.const_attenuation, 0.0f, 1.0f);
+            ::ImGui::SliderFloat(linearName.c_str(), &point.linear_attenuation, 0.0f, 0.2f);
+            ::ImGui::SliderFloat(quadName.c_str(), &point.quad_attenuation, 0.0f, 0.1f);
+        }
     }
 
     ::ImGuizmo::SetOrthographic(false);
