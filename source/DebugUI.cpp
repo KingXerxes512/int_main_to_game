@@ -48,23 +48,13 @@ void DebugUI::Render() const
     ::ImGui_ImplWin32_NewFrame();
     ::ImGui::NewFrame();
 
-    /*::ImGuizmo::SetOrthographic(false);
-    ::ImGuizmo::BeginFrame();
-    ::ImGuizmo::Enable(true);
-    ::ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    static size_t selectedPointLight = 0;
 
-    Matrix4 translate = m_Scene.point.position;
-
-    ::ImGuizmo::Manipulate(
-        m_Camera.View().data(),
-        m_Camera.Projection().data(),
-        ::ImGuizmo::TRANSLATE,
-        ::ImGuizmo::WORLD,
-        const_cast<float*>(translate.Data().data()));
-
-    m_Scene.point.position.x = translate.Data()[12];
-    m_Scene.point.position.y = translate.Data()[13];
-    m_Scene.point.position.z = translate.Data()[14];*/
+    if (::ImGui::Button("Add Light"))
+    {
+        m_Scene.points.emplace_back(m_Scene.points.back());
+        selectedPointLight = m_Scene.points.size() - 1;
+    }
 
     ::ImGui::LabelText("", "FPS: %f", io.Framerate);
 
@@ -82,12 +72,32 @@ void DebugUI::Render() const
             point.color.r = color[0];
             point.color.g = color[1];
             point.color.b = color[2];
+            selectedPointLight = index;
         }
 
         ::ImGui::SliderFloat(constName.c_str(), &point.const_attenuation, 0.0f, 1.0f);
-        ::ImGui::SliderFloat(linearName.c_str(), &point.linear_attenuation, 0.0f, 1.0f);
-        ::ImGui::SliderFloat(quadName.c_str(), &point.quad_attenuation, 0.0f, 0.2f);
+        ::ImGui::SliderFloat(linearName.c_str(), &point.linear_attenuation, 0.0f, 0.2f);
+        ::ImGui::SliderFloat(quadName.c_str(), &point.quad_attenuation, 0.0f, 0.1f);
     }
+
+    ::ImGuizmo::SetOrthographic(false);
+    ::ImGuizmo::BeginFrame();
+    ::ImGuizmo::Enable(true);
+    ::ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+    auto& point = m_Scene.points[selectedPointLight];
+    Matrix4 translate = point.position;
+
+    ::ImGuizmo::Manipulate(
+        m_Camera.View().data(),
+        m_Camera.Projection().data(),
+        ::ImGuizmo::TRANSLATE,
+        ::ImGuizmo::WORLD,
+        const_cast<float*>(translate.Data().data()));
+
+    point.position.x = translate.Data()[12];
+    point.position.y = translate.Data()[13];
+    point.position.z = translate.Data()[14];
 
     ::ImGui::Render();
     ::ImGui_ImplOpenGL3_RenderDrawData(::ImGui::GetDrawData());
