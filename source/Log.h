@@ -39,7 +39,7 @@ struct Print
 
 // This allows for us to have Args... and also defaulted args at the end
 // It basically takes all the given args to Args... and then leaves the defaulted arg to be default
-template <Level L, class... Args>
+template <Level L = Level::DEBUG, class... Args>
 Print(const char*, Args&&...) -> Print<L, Args...>;
 
 template <class... Args>

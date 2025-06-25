@@ -110,7 +110,7 @@ int main(int argc, char** argv)
             static_cast<float>(window.Width()),
             static_cast<float>(window.Height()),
             0.001f,
-            100.0f);
+            300.0f);
 
         std::unordered_map<game::Key, bool> key_state{
             {game::Key::W, false}, {game::Key::S, false}, {game::Key::S, false}, {game::Key::D, false}};
