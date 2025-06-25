@@ -1,63 +1,22 @@
 #include "Mesh.h"
 #include "Buffer.h"
 #include "BufferWriter.h"
+#include "ModelLoader.h"
 #include "VertexData.h"
-
-namespace
-{
-
-constexpr game::VertexData vertex_data[] = {
-    {.position = {-1.0f, -1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f}, .uv = {0.0f, 0.0f}}, //
-    {.position = {1.0f, -1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f}, .uv = {1.0f, 0.0f}},  //
-    {.position = {1.0f, 1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f}, .uv = {1.0f, 1.0f}},   //
-    {.position = {-1.0f, 1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f}, .uv = {0.0f, 1.0f}},  //
-
-    {.position = {-1.0f, -1.0f, -1.0f}, .normal = {0.0f, 0.0f, -1.0f}, .uv = {1.0f, 0.0f}}, //
-    {.position = {1.0f, -1.0f, -1.0f}, .normal = {0.0f, 0.0f, -1.0f}, .uv = {0.0f, 0.0f}},  //
-    {.position = {1.0f, 1.0f, -1.0f}, .normal = {0.0f, 0.0f, -1.0f}, .uv = {0.0f, 1.0f}},   //
-    {.position = {-1.0f, 1.0f, -1.0f}, .normal = {0.0f, 0.0f, -1.0f}, .uv = {1.0f, 1.0f}},  //
-
-    {.position = {-1.0f, -1.0f, -1.0f}, .normal = {-1.0f, 0.0f, 0.0f}, .uv = {0.0f, 0.0f}}, //
-    {.position = {-1.0f, -1.0f, 1.0f}, .normal = {-1.0f, 0.0f, 0.0f}, .uv = {1.0f, 0.0f}},  //
-    {.position = {-1.0f, 1.0f, 1.0f}, .normal = {-1.0f, 0.0f, 0.0f}, .uv = {1.0f, 1.0f}},   //
-    {.position = {-1.0f, 1.0f, -1.0f}, .normal = {-1.0f, 0.0f, 0.0f}, .uv = {0.0f, 1.0f}},  //
-
-    {.position = {1.0f, -1.0f, -1.0f}, .normal = {1.0f, 0.0f, 0.0f}, .uv = {0.0f, 0.0f}}, //
-    {.position = {1.0f, -1.0f, 1.0f}, .normal = {1.0f, 0.0f, 0.0f}, .uv = {1.0f, 0.0f}},  //
-    {.position = {1.0f, 1.0f, 1.0f}, .normal = {1.0f, 0.0f, 0.0f}, .uv = {1.0f, 1.0f}},   //
-    {.position = {1.0f, 1.0f, -1.0f}, .normal = {1.0f, 0.0f, 0.0f}, .uv = {0.0f, 1.0f}},  //
-
-    {.position = {-1.0f, 1.0f, -1.0f}, .normal = {0.0f, 1.0f, 0.0f}, .uv = {0.0f, 0.0f}}, //
-    {.position = {1.0f, 1.0f, -1.0f}, .normal = {0.0f, 1.0f, 0.0f}, .uv = {1.0f, 0.0f}},  //
-    {.position = {1.0f, 1.0f, 1.0f}, .normal = {0.0f, 1.0f, 0.0f}, .uv = {1.0f, 1.0f}},   //
-    {.position = {-1.0f, 1.0f, 1.0f}, .normal = {0.0f, 1.0f, 0.0f}, .uv = {0.0f, 1.0f}},  //
-
-    {.position = {-1.0f, -1.0f, -1.0f}, .normal = {0.0f, -1.0f, 0.0f}, .uv = {0.0f, 0.0f}}, //
-    {.position = {1.0f, -1.0f, -1.0f}, .normal = {0.0f, -1.0f, 0.0f}, .uv = {1.0f, 0.0f}},  //
-    {.position = {1.0f, -1.0f, 1.0f}, .normal = {0.0f, -1.0f, 0.0f}, .uv = {1.0f, 1.0f}},   //
-    {.position = {-1.0f, -1.0f, 1.0f}, .normal = {0.0f, -1.0f, 0.0f}, .uv = {0.0f, 1.0f}},  //
-};
-
-constexpr ::GLuint indices[] = {
-    0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,  8,  9,  10, 10, 11, 8, //
-    12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20 //
-};
-
-}
 
 namespace game
 {
 
-Mesh::Mesh()
+Mesh::Mesh(const ModelData& data)
     : m_VAO(0u, [](auto vao) { ::glDeleteVertexArrays(1, &vao); })
-    , m_VBO{sizeof(vertex_data) + sizeof(indices)}
-    , m_IndexCount(static_cast<std::uint32_t>(std::ranges::distance(indices)))
-    , m_IndexOffset(sizeof(vertex_data))
+    , m_VBO{static_cast<uint32_t>(data.vertices.size_bytes() + data.indices.size_bytes())}
+    , m_IndexCount(static_cast<std::uint32_t>(data.indices.size()))
+    , m_IndexOffset(data.vertices.size_bytes())
 {
     {
         BufferWriter writer{m_VBO};
-        writer.Write(vertex_data);
-        writer.Write(indices);
+        writer.Write(data.vertices);
+        writer.Write(data.indices);
     }
 
     ::glCreateVertexArrays(1, &m_VAO);

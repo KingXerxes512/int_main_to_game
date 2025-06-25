@@ -46,19 +46,21 @@ int main(int argc, char** argv)
 
         game::Window window(1920, 1080);
 
-        game::ResourceLoader loader{argv[1]};
-        const auto vertex_shader_src = loader.Load_String("simple_vert.glsl");
-        const auto fragment_shader_src = loader.Load_String("simple_frag.glsl");
+        game::ResourceLoader resourceLoader{argv[1]};
+        game::ModelLoader modelLoader{};
 
-        game::Texture texture{loader.Load_Binary("container2.png"), 500, 500};
-        game::Texture specMap{loader.Load_Binary("container2_specular.png"), 500, 500};
+        const auto vertex_shader_src = resourceLoader.Load_String("simple_vert.glsl");
+        const auto fragment_shader_src = resourceLoader.Load_String("simple_frag.glsl");
+
+        game::Texture texture{resourceLoader.Load_Binary("container2.png"), 500, 500};
+        game::Texture specMap{resourceLoader.Load_Binary("container2_specular.png"), 500, 500};
         game::Sampler sampler{};
 
         const game::Texture* textures[]{&texture, &specMap};
         const game::Sampler* samplers[]{&sampler, &sampler};
         const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
 
-        const auto mesh = game::Mesh();
+        const auto mesh = game::Mesh(modelLoader.Cube());
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
