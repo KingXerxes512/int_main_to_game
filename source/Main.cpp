@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         game::Window window(1920, 1080);
 
         game::ResourceLoader resourceLoader{argv[1]};
-        game::ModelLoader modelLoader{};
+        game::ModelLoader modelLoader{resourceLoader};
 
         const auto vertex_shader_src = resourceLoader.Load_String("simple_vert.glsl");
         const auto fragment_shader_src = resourceLoader.Load_String("simple_frag.glsl");
@@ -60,7 +60,8 @@ int main(int argc, char** argv)
         const game::Sampler* samplers[]{&sampler, &sampler};
         const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
 
-        const auto mesh = game::Mesh(modelLoader.Cube());
+        const auto sofaModel = modelLoader.Load("Low-Poly Plant_.obj", "Low-Poly_Plant_.001_Cube.000");
+        const auto mesh = game::Mesh(sofaModel);
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
@@ -68,10 +69,11 @@ int main(int argc, char** argv)
 
         auto entities = std::vector<game::Entity>{};
 
+
         std::random_device rd{};
         std::mt19937 gen{rd()};
         std::uniform_real_distribution dist(-5.0f, 5.0f);
-        
+
         for (auto i = -10; i < 10; ++i)
         {
             for (auto j = -10; j < 10; ++j)
