@@ -12,10 +12,11 @@ Entity::Entity(
     const game::Mesh* mesh,
     const game::Material* material,
     const game::Vector3& position,
+    const game::Vector3& scale,
     const std::vector<std::tuple<const game::Texture*, const game::Sampler*>>& textures)
     : m_Mesh(mesh)
     , m_Material(material)
-    , m_Model(Matrix4(position))
+    , m_Model(Matrix4(position) * Matrix4(scale, {}))
     , m_Textures(textures)
 {
 }

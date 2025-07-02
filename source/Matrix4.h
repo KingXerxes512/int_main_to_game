@@ -9,6 +9,10 @@
 namespace game
 {
 
+struct Scale
+{
+};
+
 class Matrix4
 {
   public:
@@ -40,6 +44,12 @@ class Matrix4
                translation.y,
                translation.z,
                1.0f})
+    {
+    }
+
+    constexpr Matrix4(const Vector3& scale, Scale)
+        : m_Elements(
+              {scale.x, 0.0f, 0.0f, 0.0f, 0.0f, scale.y, 0.0f, 0.0f, 0.0f, 0.0f, scale.z, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f})
     {
     }
 

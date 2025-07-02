@@ -21,6 +21,7 @@ class Entity
         const game::Mesh* mesh,
         const game::Material* material,
         const game::Vector3& position,
+        const game::Vector3& scale,
         const std::vector<std::tuple<const Texture*, const Sampler*>>& textures);
 
     const game::Mesh* Mesh() const;

@@ -60,8 +60,9 @@ int main(int argc, char** argv)
         const game::Sampler* samplers[]{&sampler, &sampler};
         const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
 
-        const auto sofaModel = modelLoader.Load("Low-Poly Plant_.obj", "Low-Poly_Plant_.001_Cube.000");
-        const auto mesh = game::Mesh(sofaModel);
+        //const auto sofaModel = modelLoader.Load("Low-Poly Plant_.obj", "Low-Poly_Plant_.001_Cube.000");
+        const auto barrelModel = modelLoader.Load("Wooden-Barrel.obj", "Cylinder_Cylinder.002");
+        const auto mesh = game::Mesh(barrelModel);
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
         const auto fragment_shader = game::Shader(fragment_shader_src, game::ShaderType::FRAGMENT);
         auto material = game::Material(vertex_shader, fragment_shader);
@@ -69,10 +70,11 @@ int main(int argc, char** argv)
 
         auto entities = std::vector<game::Entity>{};
 
-
         std::random_device rd{};
         std::mt19937 gen{rd()};
         std::uniform_real_distribution dist(-5.0f, 5.0f);
+
+        entities.reserve(100);
 
         for (auto i = -10; i < 10; ++i)
         {
@@ -82,6 +84,7 @@ int main(int argc, char** argv)
                     &mesh,
                     &material,
                     game::Vector3{static_cast<float>(i) * 3.5f, dist(gen), static_cast<float>(j) * 3.5f},
+                    game::Vector3{0.1f},
                     texSam);
             }
         }
