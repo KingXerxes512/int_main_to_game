@@ -4,7 +4,7 @@
 #include "Buffer.h"
 #include "Opengl.h"
 #include "Log.h"
-#include "ModelLoader.h"
+#include "MeshLoader.h"
 
 namespace game
 {
@@ -12,7 +12,7 @@ namespace game
 class Mesh
 {
   public:
-    Mesh(const ModelData& data);
+    Mesh(const MeshData& data);
 
     void Bind() const;
     void Unbind() const;

@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         game::Window window(1920, 1080);
 
         game::ResourceLoader resourceLoader{argv[1]};
-        game::ModelLoader modelLoader{resourceLoader};
+        game::MeshLoader modelLoader{resourceLoader};
 
         const auto vertex_shader_src = resourceLoader.Load_String("simple_vert.glsl");
         const auto fragment_shader_src = resourceLoader.Load_String("simple_frag.glsl");
@@ -74,6 +74,8 @@ int main(int argc, char** argv)
         std::mt19937 gen{rd()};
         std::uniform_real_distribution dist(-5.0f, 5.0f);
 
+        constexpr auto scale = game::Vector3{0.1f};
+
         entities.reserve(100);
 
         for (auto i = -10; i < 10; ++i)
@@ -84,7 +86,7 @@ int main(int argc, char** argv)
                     &mesh,
                     &material,
                     game::Vector3{static_cast<float>(i) * 3.5f, dist(gen), static_cast<float>(j) * 3.5f},
-                    game::Vector3{0.1f},
+                    scale,
                     texSam);
             }
         }

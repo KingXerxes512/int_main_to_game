@@ -1,4 +1,4 @@
-#include "ModelLoader.h"
+#include "MeshLoader.h"
 #include "Error.h"
 #include "Log.h"
 
@@ -27,15 +27,15 @@ constexpr std::vector<game::VertexData> vertices(Args&&... args)
 namespace game
 {
 
-ModelLoader::ModelLoader(ResourceLoader& resourceLoader)
+MeshLoader::MeshLoader(ResourceLoader& resourceLoader)
     : m_ResourceLoader(resourceLoader)
 {
 }
 
-ModelData ModelLoader::Cube()
+MeshData MeshLoader::Cube()
 {
-    auto cube = m_LoadedModels.find("cube");
-    if (cube != std::ranges::cend(m_LoadedModels))
+    auto cube = m_LoadedMeshes.find("cube");
+    if (cube != std::ranges::cend(m_LoadedMeshes))
     {
         return {.vertices = cube->second.vertices, .indices = cube->second.indices};
     }
@@ -64,17 +64,17 @@ ModelData ModelLoader::Cube()
     const std::vector<uint32_t> indices = {0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,  8,  9,  10, 10, 11, 8,
                                            12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
 
-    const auto newItem = m_LoadedModels.emplace("cube", LoadedModelData{vertices(positions, normals, uvs), indices});
+    const auto newItem = m_LoadedMeshes.emplace("cube", LoadedModelData{vertices(positions, normals, uvs), indices});
 
     return {.vertices = newItem.first->second.vertices, .indices = newItem.first->second.indices};
 }
 
-ModelData ModelLoader::Load(std::string_view file, std::string_view name)
+MeshData MeshLoader::Load(std::string_view meshFile, std::string_view meshName)
 {
     auto stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT, NULL);
     aiAttachLogStream(&stream);
 
-    const auto modelFileData = m_ResourceLoader.Load_Binary(file);
+    const auto modelFileData = m_ResourceLoader.Load_Binary(meshFile);
 
     // const auto* scene = ::aiImportFileFromMemory(reinterpret_cast<const char*>(modelFileData.data()),
     // static_cast<uint32_t>(modelFileData.size()), aiProcess_Triangulate, NULL);
@@ -83,13 +83,13 @@ ModelData ModelLoader::Load(std::string_view file, std::string_view name)
     const auto* scene =
         importer.ReadFileFromMemory(modelFileData.data(), modelFileData.size(), ::aiProcess_Triangulate);
 
-    ensure(scene != nullptr && !(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE), "Failed to load model {} {}", file, name);
+    ensure(scene != nullptr && !(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE), "Failed to load model {} {}", meshFile, meshName);
 
     std::span<::aiMesh*> loadedMeshes = {scene->mMeshes, scene->mNumMeshes};
     for (const auto* mesh : loadedMeshes)
     {
-        const auto loaded = m_LoadedModels.find(mesh->mName.C_Str());
-        if (loaded != std::ranges::cend(m_LoadedModels))
+        const auto loaded = m_LoadedMeshes.find(mesh->mName.C_Str());
+        if (loaded != std::ranges::cend(m_LoadedMeshes))
         {
             /*return ModelData{.vertices = loaded->second.vertices, .indices = loaded->second.indices};*/
             continue;
@@ -126,14 +126,14 @@ ModelData ModelLoader::Load(std::string_view file, std::string_view name)
             }
         }
 
-        m_LoadedModels.emplace(
+        m_LoadedMeshes.emplace(
             mesh->mName.C_Str(), LoadedModelData{vertices(positions, normals, uvs), std::move(indices)});
     }
 
-    const auto loaded = m_LoadedModels.find(name);
-    if (loaded != std::ranges::cend(m_LoadedModels))
+    const auto loaded = m_LoadedMeshes.find(meshName);
+    if (loaded != std::ranges::cend(m_LoadedMeshes))
     {
-        return ModelData{.vertices = loaded->second.vertices, .indices = loaded->second.indices};
+        return MeshData{.vertices = loaded->second.vertices, .indices = loaded->second.indices};
     }
     else
     {

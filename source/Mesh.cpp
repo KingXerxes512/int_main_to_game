@@ -1,13 +1,13 @@
 #include "Mesh.h"
 #include "Buffer.h"
 #include "BufferWriter.h"
-#include "ModelLoader.h"
+#include "MeshLoader.h"
 #include "VertexData.h"
 
 namespace game
 {
 
-Mesh::Mesh(const ModelData& data)
+Mesh::Mesh(const MeshData& data)
     : m_VAO(0u, [](auto vao) { ::glDeleteVertexArrays(1, &vao); })
     , m_VBO{static_cast<uint32_t>(data.vertices.size_bytes() + data.indices.size_bytes())}
     , m_IndexCount(static_cast<std::uint32_t>(data.indices.size()))
