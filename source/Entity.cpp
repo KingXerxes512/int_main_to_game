@@ -16,7 +16,7 @@ Entity::Entity(
     const std::vector<std::tuple<const game::Texture*, const game::Sampler*>>& textures)
     : m_Mesh(mesh)
     , m_Material(material)
-    , m_Model(Matrix4(position) * Matrix4(scale, {}))
+    , m_Model(Matrix4(position, scale))
     , m_Textures(textures)
 {
 }
