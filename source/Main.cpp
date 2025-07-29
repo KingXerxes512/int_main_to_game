@@ -38,6 +38,43 @@ void busySleep(std::chrono::duration<T, U> duration)
     }
 }
 
+// Precise sleep function using Welfords Algo
+template <class T, class U>
+void preciseSleep(std::chrono::duration<T, U> sleepFor)
+{
+    using namespace std::chrono;
+    using namespace std::chrono_literals;
+
+    double duration = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(sleepFor).count()) / 1e9;
+
+    static double estimate = 5e-3;
+    static double mean = 5e-3;
+    static double m2 = 0;
+    static int64_t count = 1;
+
+    while (duration > estimate)
+    {
+        auto start = high_resolution_clock::now();
+        std::this_thread::sleep_for(milliseconds(1));
+        auto end = high_resolution_clock::now();
+
+        double observed = (end - start).count() / 1e9;
+        duration -= observed;
+
+        ++count;
+        double delta = observed - mean;
+        mean += delta / count;
+        m2 += (delta * (observed - mean) - m2) / count;
+        double stddev = sqrt(m2);
+        estimate = mean + stddev;
+    }
+
+    auto start = high_resolution_clock::now();
+    while ((high_resolution_clock::now() - start).count() / 1e9 < duration)
+    {
+    }
+}
+
 int main(int argc, char** argv)
 {
     try
@@ -60,7 +97,7 @@ int main(int argc, char** argv)
         const game::Sampler* samplers[]{&sampler, &sampler};
         const auto texSam = std::views::zip(textures, samplers) | std::ranges::to<std::vector>();
 
-        //const auto sofaModel = modelLoader.Load("Low-Poly Plant_.obj", "Low-Poly_Plant_.001_Cube.000");
+        // const auto sofaModel = modelLoader.Load("Low-Poly Plant_.obj", "Low-Poly_Plant_.001_Cube.000");
         const auto barrelModel = modelLoader.Load("Wooden-Barrel.obj", "Cylinder_Cylinder.002");
         const auto mesh = game::Mesh(barrelModel);
         const auto vertex_shader = game::Shader(vertex_shader_src, game::ShaderType::VERTEX);
@@ -223,7 +260,7 @@ int main(int argc, char** argv)
             auto renderEnd = std::chrono::system_clock::now();
 
             auto diff = targetTime - (renderEnd - renderStart);
-            busySleep(diff);
+            preciseSleep(diff);
         }
     }
     catch (const game::Exception& err)
